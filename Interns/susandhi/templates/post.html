@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create intern</title>
+    <script>
+        function createintern() {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const age = document.getElementById("age").value;
+            const salary = document.getElementById("salary").value;
+
+            // Send the POST request with JSON payload
+            fetch("http://127.0.0.1:8000/susandhi/create_intern/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")  // Add CSRF token to headers
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    age: parseInt(age),
+                    salary: parseInt(salary)
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert("intern Created: " + JSON.stringify(data));  // Success message
+                clearForm();  // Clear form fields
+                window.location.href = '/susandhi/get_all_person/';  // Redirect
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Failed to create intern.");
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function clearForm() {
+            document.getElementById("name").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("age").value = "";
+            document.getElementById("salary").value = "";
+        }
+    </script>
+</head>
+<body>
+    <h1>Create intern</h1>
+    <form onsubmit="event.preventDefault(); createintern();">
+        <!-- CSRF token will be used in headers via getCookie -->
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Enter name" required><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Enter email" required><br><br>
+        <label for="age">Age:</label>
+        <input type="number" id="age" placeholder="Enter age" required><br><br>
+        <label for="salary">Salary:</label>
+        <input type="number" id="salary" placeholder="Enter salary" required><br><br>
+        <button type="submit">Create intern</button>
+    </form>
+    <hr>
+    <p>Go to the Main Page: <a href="/susandhi/Main">Go To Main</a> -----------or---------- <a href="/susandhi/get_all_person/">Go Back</a></p>
+</body>
+</html>
+

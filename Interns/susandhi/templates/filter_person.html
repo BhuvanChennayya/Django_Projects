@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% comment %}
+    {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  {% endcomment %}
+    <title>Employee Filter</title>
+    
+</head>
+<body>
+    <h1>Filter Employees</h1>
+
+    <!-- Form for searching employee by name -->
+    <form method="GET" action="{% url 'filter_person' %}">
+        <label for="name">Employee Name:</label>
+        <input type="text" name="name" id="name" value="{{ request.GET.name }}">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if mymember %}
+        <h2>Filtered Employees:</h2>
+        <table border="1">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in mymember %}
+                <tr>
+                    <td>{{ employee.name }}</td>
+                    <td>{{ employee.age }}</td>
+                    <td>{{ employee.email }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        
+        <p><h2>Employee not found.</h2>
+           
+        </p>
+        
+    {% endif %}
+    Get all Employs <li>
+        <h3><a href="All_employs">All_employs</a></h3>
+    </li>
+
+    
