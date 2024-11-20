@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <li><a href="/susandhi/insert_intern"> <h2>Insert_Intenrs</h2></a></li>
+<body>
+  
+    <h2>interns List</h2>
+    {% if latest_intern %}
+    <ul>
+    {% for intern in latest_intern %}
+        <li><a href="intern_details/{{ intern.id }}/">{{ intern.name }}</a></li>
+        <h2>for delete</h2>
+        <li><a href="delete_intern/{{ intern.id }}/">{{ intern.name }}</a></li>
+        <h2>for update</h2>
+        <li><a href="update_intern/{{ intern.id }}/">{{ intern.name }}</a></li>
+        <hr>
+    {% empty %} 
+    <li>No members</li>
+  {% endfor %}
+    </ul>
+    {% else %}
+    <h3><p>No latest_intern are available.</p></h3>
+        {% endif %}
+        <hr>
+        <p>Go to the Main Page <a href="/susandhi/Main">Go To Main</a></p>
+</body>
+</html>

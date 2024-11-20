@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% comment %}
+    {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  {% endcomment %}
+    <title>internee Filter</title>
+    
+</head>
+<body>
+    <h1>Filter internees</h1>
+
+    <!-- Form for searching internee by name -->
+    <form method="GET" action="{% url 'filter_person' %}">
+        <label for="name">internee Name:</label>
+        <input type="text" name="name" id="name" value="{{ request.GET.name }}">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if mymember %}
+        <h2>Filtered internees:</h2>
+        <table border="1">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for internee in mymember %}
+                <tr>
+                    <td>{{ internee.name }}</td>
+                    <td>{{ internee.age }}</td>
+                    <td>{{ internee.email }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        
+        <p><h2>internee not found.</h2>
+           
+        </p>
+        
+    {% endif %}
+    Get all interns <li>
+        <h3><a href="All_interns">All_interns</a></h3>
+    </li>
+
+    

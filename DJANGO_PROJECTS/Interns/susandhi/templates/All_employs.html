@@ -1,0 +1,22 @@
+{% extends "master.html" %}
+
+{% block title %}
+Members of the office
+{% endblock %}
+
+{% block content %}
+<h1>Members in the office</h1>
+<ul>
+    {% for member in latest_intern %}
+    <li # {% if forloop.last %} 
+        style='background-color:lightgreen;'
+    {% endif %}# >
+    <a href="/susandhi/All_interns/intern_details/{{ member.id }}">{{ member.name }}</a>
+    </li>
+    {% endfor %}
+    <hr>
+    
+    <p>Go to the Main Page <a href="/susandhi/Main">Go To Main</a></p>
+</ul>
+
+{% endblock %}

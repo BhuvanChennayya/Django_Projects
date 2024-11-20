@@ -1,0 +1,40 @@
+
+<h1>{{employ.id}},{{employ.name}}</h1>
+
+<button class="deleteButton" data-id="{{ employ.id }}">Delete</button>
+
+<script>
+    // Adding an event listener to the delete button
+    document.querySelectorAll(".deleteButton").forEach(button => {
+        button.addEventListener("click", function() {
+            let internId = this.getAttribute('data-id');
+            
+            // Send the DELETE request using fetch
+            fetch(`/susandhi/delete/${internId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',  // CSRF token for security
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("intern deleted successfully!");
+                    // Optionally reload or update the page to reflect the changes
+                    // location.load('/susandhi/get_all_person/');  // Reload the pagef  etch(`/susandhi/get_all_person/`,{method: 'GET',})
+                    location.href = '/susandhi/get_all_person/';
+                } else {
+                    alert("Failed to delete intern.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    });
+</script>
+<hr>
+
+    <!-- Links to navigate to other pages -->
+    <p>Go to the Main Page: <a href="/susandhi/Main">Go To Main</a>  -----------or----------  <a href="/susandhi/get_all_person/">Go Back</a></p>
+

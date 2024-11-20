@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  {% load static %}
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'global.css' %}">  
+      </head>
+      <body>
+
+        {% block content %}
+        {% endblock %}
+        
+        </body>
+</html>

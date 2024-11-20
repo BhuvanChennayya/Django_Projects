@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+    {% if employ %}
+    
+    <h1>intern Details</h1>
+    
+    <h2>Employ Name : {{employ.name}}</h2>
+    <p>Age : {{employ.age}}</p>
+    <p>Email_id : {{employ.email}}</p>
+    <hr>
+    <p>Back to the Main Page <a href="/susandhi/get_all_person">Get All Employs</a></p>
+    {% else %}
+    <h3><p>No  Employ are available.</p></h3>
+        {% endif %}
+
+    {% include 'All_employs.html' %}
+    
+</body>
+</html>
