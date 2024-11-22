@@ -1,0 +1,72 @@
+################################################################################
+# Copyright (c) 2021-2022 DOCKETRUN TECH PRIVATE LIMITED. All rights reserved.
+################################################################################
+
+
+[application]
+#gie-kitti-output-dir=streamscl
+
+[tiled-display]
+
+[sources]
+
+[sink0]
+
+[sink2]
+enable=0
+type=3
+#1=mp4 2=mkv
+container=1
+#1=h264 2=h265 3=mpeg4
+## only SW mpeg4 is supported right now.
+codec=3
+sync=1
+bitrate=2000000
+output-file=out.mp4
+source-id=0
+
+[osd]
+
+[streammux]
+
+[primary-gie]
+
+[secondary-gie0]
+
+[secondary-gie1]
+
+[secondary-gie2]
+
+[tracker]
+
+[nvds-analytics]
+
+[tests]
+file-loop=0
+
+
+[application-config]
+app-title = DocketEye
+image-save-path = images/frame
+image-compression-ratio =100 
+
+[restricted-access]
+# '-1' if you do not want RA
+#draw-person-bbox-in-roi = 0
+#box-overlay-enable = 1
+#box-overlay-colour = 1.0;0.0;0.0;1.0;
+#box-overlay-line-width = 4
+
+[ppe-type-1]
+# '-1' if you do not want PPE_type1
+
+
+[crowd-counting]
+
+[steam-suit]
+camera-ids = -1;
+data-save-interval = 1
+
+[traffic-jam]
+
+[traffic-counting]

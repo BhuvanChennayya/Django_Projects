@@ -1,0 +1,68 @@
+{
+    "models": {
+        "trafficcamnet": {
+            "enable": 0,
+            "modelpath": "config_infer_primary_trafficamnet.txt",
+            "class_id": "2"
+        },
+        "objectDetector_Yolo": {
+            "enable": 0,
+            "modelpath": "objectDetector_Yolo/config_infer_primary_yoloV3.txt",
+            "class_id": "0"
+        },
+        "peoplenet": {
+            "enable": 0,
+            "modelpath": "config_infer_primary_peoplenet.txt",
+            "class_id": "2"
+        },
+        "yoloV8": {
+            "enable": 1,
+            "modelpath": "yoloV8/config_infer_primary_yolox.txt",
+            "class_id": "0"
+        }
+    },
+    "secondarymodels": {
+        "helmet": {
+            "enable": 1,
+            "version": 5,
+            "modelpath": "config_infer_secandary_helmet_v5.txt",
+            "class_id": "0"
+        },
+        "vest": {
+            "enable": 1,
+            "version": 5,
+            "modelpath": "config_infer_secandary_vest_v5.txt",
+            "class_id": "0"
+        },
+        "steamsuit": {
+            "enable": 1,
+            "version": 1,
+            "modelpath": "config_infer_primary_tsk_ss.txt",
+            "class_id": "0"
+        },
+        "hydraliclock": {
+            "enable": 1,
+            "version": 1,
+            "modelpath": "config_infer_primary_vgg16_lock.txt",
+            "class_id": "0"
+        },
+        "esiprimarymodel": {
+            "enable": 1,
+            "version": 2,
+            "modelpath": "config_infer_primary_tsk_v_0_2.txt",
+            "class_id": "0"
+        },
+        "archjacket": {
+            "enable": 1,
+            "version": 3,
+            "modelpath": "config_infer_secandary_arc_gnet_v3.txt",
+            "class_id": "0"
+        },
+        "irrd": {
+            "enable": 1,
+            "version": 2,
+            "modelpath": "config_infer_secandary_irrd_v2.txt",
+            "class_id": "0"
+        }
+    }
+}

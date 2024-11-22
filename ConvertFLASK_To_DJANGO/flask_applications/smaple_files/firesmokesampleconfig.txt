@@ -1,0 +1,49 @@
+################################################################################
+# Copyright (c) 2021-2022 DOCKETRUN TECH PRIVATE LIMITED. All rights reserved.
+################################################################################
+
+
+[application]
+#gie-kitti-output-dir=streamscl
+
+[tiled-display]
+
+[sources]
+
+[sink0]
+
+
+[sink2]
+enable=0
+type=3
+#1=mp4 2=mkv
+container=1
+#1=h264 2=h265 3=mpeg4
+## only SW mpeg4 is supported right now.
+codec=3
+sync=1
+bitrate=2000000
+output-file=out.mp4
+source-id=0
+
+[osd]
+
+[streammux]
+
+[primary-gie]
+
+
+
+
+[tracker]
+
+[application-config]
+
+[nvds-analytics]
+
+[tests]
+file-loop=0
+
+
+
+[fsd]

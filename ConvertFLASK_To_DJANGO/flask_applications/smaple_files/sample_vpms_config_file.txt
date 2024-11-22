@@ -1,0 +1,28 @@
+################################################################################
+# Copyright (c) 2021-2022 DOCKETRUN TECH PRIVATE LIMITED. All rights reserved.
+################################################################################
+
+[application]
+
+[tiled-display]
+
+[sources]
+[sink0]
+
+[osd]
+
+[streammux]
+
+[primary-gie]
+
+
+[tracker]
+
+
+[nvds-analytics]
+
+[application-config]
+
+
+camera-ids = -1;
+data-save-interval = 1

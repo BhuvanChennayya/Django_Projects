@@ -1,0 +1,48 @@
+{
+    "threshold": [
+        {
+            "class": "person",
+            "value": 60
+        },
+        {
+            "class": "helmet",
+            "value": 0
+        },
+        {
+            "class": "vest",
+            "value": 61
+        },
+        {
+            "class": "crash_helmet",
+            "value": 90
+        },
+        {
+            "class": "fire_smoke_dust",
+            "value": 61
+        },
+        {
+            "class": "bicycle",
+            "value": 23
+        },
+        {
+            "class": "motorbike",
+            "value": 20
+        },
+        {
+            "class": "car",
+            "value": 28
+        },
+        {
+            "class": "bus",
+            "value": 10
+        },
+        {
+            "class": "truck",
+            "value": 0
+        },
+        {
+            "class": "wheel",
+            "value": 0
+        }
+    ]
+}
