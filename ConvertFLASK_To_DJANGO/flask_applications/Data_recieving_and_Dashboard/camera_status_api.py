@@ -993,7 +993,7 @@ def get_solution_data_details():
 
 
 
-# @camera_status.route('/get_current_date_violation', methods=['GET'])
+
 @camera_status.route('/get_current_date_violation_counts', methods=['GET'])
 def get_current_date_violations():
     ret = {'message':'Someting went wrong api','success':False}
@@ -1513,7 +1513,7 @@ def data_betweem_violations_count():
 
 
 
-# @camera_status.route('/date_wise_given_violation_count', methods=['POST'])
+
 @camera_status.route('/date_wise_violations_count', methods=['POST'])
 def date_wise_given_violation_count():
     result = {'message': 'Something went wrong to the violation count API.','success':False}
@@ -1765,7 +1765,6 @@ def ppe_violations_count_cam_wise():
 
 
 """CURRENT DATE TC VIOLATIONS CAMERA DETAILS"""
-# @camera_status.route('/TC_violations_count_cam_wise', methods=['GET'])
 @camera_status.route('/cam_wise_TC_violations_details', methods=['GET'])
 def TC_violations_count_cam_wise():
     ret = {'message':'Someting went wrong cam_wise_TC_violations_details','success':False}
@@ -1818,7 +1817,7 @@ def TC_violations_count_cam_wise():
 
 
 """CURRENT DATE RA VIOLATIONS CAMERA DETAILS"""
-# @camera_status.route('/cam_wise_RA_violations_count', methods=['GET'])
+# @camera_status..route('/cam_wise_RA_violations_count', methods=['GET'])
 # def RA_violations_count_cam_wise():
 #     ret = {'message':'Someting went wrong cam_wise_RA_violations_details','success':False}
 #     if 1:

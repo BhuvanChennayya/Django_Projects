@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
-from FLASK_into_DJANGO.packages import *
-from FLASK_into_DJANGO.database import *
+from Data_Recieving.packages import *
+from Data_Recieving.database import *
 
 # Create your views here.
 

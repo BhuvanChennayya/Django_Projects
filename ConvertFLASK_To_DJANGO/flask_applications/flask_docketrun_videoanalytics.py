@@ -6,7 +6,7 @@ DB_NAME ='DOCKETRUNDB'#'TSKTEST'#'tsk01062023' #'test_security'#'DOCKETRUNDB' #'
 main_api.set_mongodb_name(db_name=DB_NAME)
 setproctitle("DOCKET-Flask_Application-5000")
 # serve(app, port=5000,threads=1000)#,threaded=True)
-app.run(host='0.0.0.0', port=5500, debug=True, threaded=True)
+app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
 
 # import Data_recieving_and_Dashboard.main_api as main_api
 # from Data_recieving_and_Dashboard.main_api import app

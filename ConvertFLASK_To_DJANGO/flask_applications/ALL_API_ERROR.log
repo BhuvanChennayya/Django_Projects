@@ -3137,34 +3137,6 @@
 
  [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:00:48
 
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:18:59
+ [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:01:48
 
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:19:29
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:19:59
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:20:29
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:20:59
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:21:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:22:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:23:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:24:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:25:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:26:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:27:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:28:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:29:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:30:48
-
- [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:31:48
+ [ERROR] dashboard_apis -- violation_type_details 2 local variable 'ret' referenced before assignment  ----time ----  2024-11-21 10:02:48

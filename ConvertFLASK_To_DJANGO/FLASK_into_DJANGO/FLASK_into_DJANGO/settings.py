@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'DocketEye_DB',
     }
 }
-MONGO_DB_NAME = 'FLASK_To_DJANGO'
+MONGO_DB_NAME = 'DOCKETRUNDB'
 MONGO_URI = 'mongodb://localhost:27017/'
 
 
