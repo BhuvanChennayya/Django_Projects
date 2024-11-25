@@ -28,4 +28,17 @@ urlpatterns=[
     path("FIREviolationCount",views.FIREviolationCount,name="FIREviolationCount"),
 
 
+    path("cam_wise_FIRE_violations_details",views.fire_violations_count_cam_wise,name="cam_wise_FIRE_violations_details"),
+    path("SMOKEviolationCount",views.SMOKEviolationCount,name="SMOKEviolationCount"),
+    path("cam_wise_SMOKE_violations_details",views.SMOKE_violations_count_cam_wise,name="cam_wise_SMOKE_violations_details"),
+    path("DUSTviolationCount",views.DUSTviolationCount,name="DUSTviolationCount"),
+    path("cam_wise_DUST_violations_details",views.DUST_violations_count_cam_wise,name="cam_wise_DUST_violations_details"),
+    path("current_date_violations_cam_wise",views.current_date_violations_details,name="current_date_violations_cam_wise"),
+    path("cam_wise_violations_count_by_date",views.cam_wise_violations_count_by_date,name="cam_wise_violations_count_by_date"),
+    path("cam_wise_PPE_violations_by_date",views.date_wise_ppe_violations_details,name="cam_wise_PPE_violations_by_date"),
+    path("cam_wise_RA_violations_by_date",views.date_wise_RA_violations_counts,name="cam_wise_RA_violations_by_date"),
+    path("cam_wise_CR_violations_by_date",views.date_wise_CR_violations_cam_details,name="cam_wise_CR_violations_by_date"),
+    path("cam_wise_PPE_crash_helmet_violations_by_date",views.date_wise_ppe_crash_helmet_violations_details,name="cam_wise_PPE_crash_helmet_violations_by_date"),
+    path("cam_wise_truck_reversal_RA_violations_by_date",views.cam_wise_truck_reversal_RA_violations_by_date,name="cam_wise_truck_reversal_RA_violations_by_date"),
+
 ]

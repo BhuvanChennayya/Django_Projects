@@ -17,11 +17,14 @@ from django.contrib import admin
 from django.urls import path,include
 import DashBoard.urls 
 import camera_status_api.urls
+import camera_coin_api.urls
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('DashBoard/', include(DashBoard.urls)),
+    # path('DashBoard/', include(DashBoard.urls)),
     path('camera_status_api/', include(camera_status_api.urls)),
+    path('camera_coin_api/', include(camera_coin_api.urls)),
+
 
 ]

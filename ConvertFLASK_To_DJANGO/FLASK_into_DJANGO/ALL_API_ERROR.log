@@ -2,3 +2,7 @@
  [ERROR] dashboard_apis -- excel_download 1 max() arg is an empty sequence  ----time ----  2024-11-22 06:21:08
 
  [ERROR] dashboard_apis -- excel_download 1 max() arg is an empty sequence  ----time ----  2024-11-22 06:21:46
+
+ [ERROR] packages -- split_rtsp_url 1 list index out of range  ----time ----  2024-11-25 13:46:48
+
+ [ERROR] camera_api -- add_camera_rtsp 5 expected string or bytes-like object  ----time ----  2024-11-25 13:46:48

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'DashBoard',
     'camera_status_api',
+    "camera_coin_api",
 ]
 
 MIDDLEWARE = [

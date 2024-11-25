@@ -2572,7 +2572,7 @@ def current_date_violations_details():
 
     return jsonify(result)
 
-# @camera_status.route('/current_date_violations_cam_wise', methods=['GET'])
+# @camera_status..route('/current_date_violations_cam_wise', methods=['GET'])
 # def current_date_violations_details():
 #     result = {'message': 'something went wrong', 'success': False}    
 #     # try:
@@ -2849,7 +2849,6 @@ def current_date_violations_details():
 
 
 """DATE WISE ALL VIOLATION COUNTS"""
-# @camera_status.route('/date_wise_violations_count', methods=['POST'])
 @camera_status.route('/cam_wise_violations_count_by_date', methods=['POST'])
 def cam_wise_violations_count_by_date():
     result = {'message': 'something went wrong ','success':False}
@@ -3049,8 +3048,8 @@ def cam_wise_violations_count_by_date():
     return result
 
 # """DATE WISE ALL VIOLATION COUNTS"""
-# # @camera_status.route('/date_wise_violations_count', methods=['POST'])
-# @camera_status.route('/cam_wise_violations_count_by_date', methods=['POST'])
+# # @camera_status..route('/date_wise_violations_count', methods=['POST'])
+# @camera_status..route('/cam_wise_violations_count_by_date', methods=['POST'])
 # def cam_wise_violations_count_by_date():
 #     result = {'message': 'something went wrong ','success':False}
 #     if 1:
@@ -3269,7 +3268,7 @@ def cam_wise_violations_count_by_date():
 
 
 """DATE WISE PPE VIOLATION COUNTS"""
-# @camera_status.route('/ppe_violations_count_cam_wise', methods=['GET'])
+# @camera_status..route('/ppe_violations_count_cam_wise', methods=['GET'])
 @camera_status.route('/cam_wise_PPE_violations_by_date', methods=['POST'])
 def date_wise_ppe_violations_details():
     ret = {'message': 'something went wrong in date_wise_PPE_violations_details API.','success': False}
@@ -3342,7 +3341,7 @@ def date_wise_ppe_violations_details():
 
 
 """DATE WISE RA VIOLATION COUNTS"""
-# @camera_status.route('/ppe_violations_count_cam_wise', methods=['GET'])
+# @camera_status..route('/ppe_violations_count_cam_wise', methods=['GET'])
 @camera_status.route('/cam_wise_RA_violations_by_date', methods=['POST']) 
 def date_wise_RA_violations_counts():
     ret = {'message': 'something went wrong in date_wise_RA_violations_details API.', 'success': False}

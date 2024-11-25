@@ -2255,3 +2255,1019 @@ def FIREviolationCount(request):
             'message':"request type wrong, please try once again."
         } 
     return JsonResponse(ret)
+
+
+# 25/11/2024
+"""FIRE SOLUTION ENABLED CAMERAS """
+# @camera_status.route('/cam_wise_FIRE_violations_details', methods=['GET'])
+@csrf_exempt
+def fire_violations_count_cam_wise(request):
+    ret = {'message': 'Something went wrong cam_wise_FIRE_violations_details', 'success': False}
+    if request.method == "GET":
+        find_data_cam_status = ppera_cameras.find({'camera_status': True}, {'cameraname': 1, 'camera_ip': 1, 'rtsp_url': 1, 'imagename': 1, 'firesmoke_data': 1})
+        
+        FIRE_require_data_details = []
+        camera_rtsp_urls = []
+        camera_details = {}
+        
+        for find_data in find_data_cam_status:
+            if find_data.get('firesmoke_data'):
+                camera_rtsp_urls.append(find_data['rtsp_url'])
+                camera_details[find_data['rtsp_url']] = {
+                    'camera_name': find_data['cameraname'],
+                    'camera_ip': find_data['camera_ip'],
+                    'rtsp_url': find_data['rtsp_url'],
+                    'imagename': find_data['imagename']
+                }
+        
+        if camera_rtsp_urls:
+            match_data = {
+                            'timestamp': {'$regex': '^' + str(date.today())}, 
+                            'analytics_details.details.obj_details.class_name':'fire',
+                            'analytics_details.details.obj_details.violation':True
+                            
+                            }
+            
+            
+            violation_data = firesmokeviolationdata.aggregate([
+                {'$match': match_data},
+                {'$group': {'_id': '$camera_rtsp', 'violation_count': {'$sum': 1}}},
+                {'$sort': {'_id': 1}}
+            ])
+            
+            for vd in violation_data:
+                camera_info = camera_details.get(vd['_id'])
+                if camera_info:
+                    FIRE_require_data_details.append({
+                        'camera_name': camera_info['camera_name'],
+                        'camera_ip': camera_info['camera_ip'],
+                        'rtsp_url': camera_info['rtsp_url'],
+                        'imagename': camera_info['imagename'],
+                        'fire_type_counts': vd['violation_count']
+                    })
+
+        if FIRE_require_data_details:
+            ret = {'message': FIRE_require_data_details, 'success': True}
+
+        else:
+            ret['message'] = 'No FIRE Violations Detected'
+
+    return JsonResponse(ret)
+
+
+"""CURRENT DATE SMOKE CAMERAS COUNT"""
+# @camera_status.route('/SMOKEviolationCount', methods=['GET','POST'])
+@csrf_exempt
+def SMOKEviolationCount(request):
+    ret = {'success': False, 'message': 'something went wrong with get SMOKEviolationCount api'}    
+    SMOKEviolationCount = 0
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        request_key_array = ['from_date', 'to_date','camera_name','department']
+        if data != None:
+            jsonobjectarray = list(set(data))
+            missing_key = set(request_key_array).difference(jsonobjectarray)
+            if not missing_key:
+                output = [k for k, v in data.items() if v == '']
+                if output:
+                    result['message'] = " ".join(["You have missed these parameters", str(output), ' to enter. please enter properly.']) 
+                else:
+                    from_date = data['from_date']
+                    to_date = data['to_date']
+                    department = data['department']
+                    camera_name =  data['camera_name']
+                    rtsp_url = data['rtsp_url']
+                    match_data = {
+                        'timestamp':{'$gte': from_date, '$lte': to_date}, 
+                        'camera_name':  department, #d_data['cameraname'], 
+                        'camera_rtsp':rtsp_url, #d_data['rtsp_url'],
+                        'analytics_details.details.obj_details.class_name':'smoke'
+                        }
+                    distinct_ticket_nos = firesmokeviolationdata.distinct('ticket_no', match_data)
+                    # The length of this list gives you the count of unique ticket_no values
+                    ret = {'success': True, 'message': {'raviolationcount': len(distinct_ticket_nos)}} #FIRESMOKEviolationCount}}
+            else:
+                result = {'message': " ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']), 'success': False}
+        else:
+            result = {'message': " ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']), 'success': False}
+    elif request.method == 'GET':
+        match_data = {
+                        'timestamp': {'$regex': '^' + str(date.today())}, 
+                        # 'camera_name':  department, #d_data['cameraname'], 
+                        # 'camera_rtsp': rtsp_url, #d_data['rtsp_url'],
+                        'analytics_details.details.obj_details.class_name':'smoke',
+                        'analytics_details.details.obj_details.violation':True
+                        
+                        }
+        
+        distinct_ticket_nos = firesmokeviolationdata.distinct('ticket_no', match_data)
+
+            # The length of this list gives you the count of unique ticket_no values
+        SMOKEviolationCount = len(distinct_ticket_nos)
+        ret = {'success': True, 'message': {'smokeviolationcount':SMOKEviolationCount}}  
+    else:
+        ret={
+            'success': False,
+            'message':"request type wrong, please try once again."
+        } 
+    return JsonResponse(ret)
+
+"""SMOKE SOLUTION ENABLED CAMERAS DETAILS"""
+# @camera_status.route('/cam_wise_SMOKE_violations_details', methods=['GET'])
+@csrf_exempt
+def SMOKE_violations_count_cam_wise(request):
+    ret = {'message': 'Something went wrong cam_wise_SMOKE_violations_details', 'success': False}
+    if request.method == "GET":
+        find_data_cam_status = ppera_cameras.find({'camera_status': True}, {'cameraname': 1, 'camera_ip': 1, 'rtsp_url': 1, 'imagename': 1, 'firesmoke_data': 1})
+        
+        SMOKE_require_data_details = []
+        camera_rtsp_urls = []
+        camera_details = {}
+        
+        for find_data in find_data_cam_status:
+            if find_data.get('firesmoke_data'):
+                camera_rtsp_urls.append(find_data['rtsp_url'])
+                camera_details[find_data['rtsp_url']] = {
+                    'camera_name': find_data['cameraname'],
+                    'camera_ip': find_data['camera_ip'],
+                    'rtsp_url': find_data['rtsp_url'],
+                    'imagename': find_data['imagename']
+                }
+        
+        if camera_rtsp_urls:
+            match_data = {
+                            'timestamp': {'$regex': '^' + str(date.today())}, 
+                            'analytics_details.details.obj_details.class_name':'smoke',
+                            'analytics_details.details.obj_details.violation':True
+                            
+                            }
+            
+            
+            violation_data = firesmokeviolationdata.aggregate([
+                {'$match': match_data},
+                {'$group': {'_id': '$camera_rtsp', 'violation_count': {'$sum': 1}}},
+                {'$sort': {'_id': 1}}
+            ])
+            
+            for vd in violation_data:
+                camera_info = camera_details.get(vd['_id'])
+                if camera_info:
+                    SMOKE_require_data_details.append({
+                        'camera_name': camera_info['camera_name'],
+                        'camera_ip': camera_info['camera_ip'],
+                        'rtsp_url': camera_info['rtsp_url'],
+                        'imagename': camera_info['imagename'],
+                        'fire_type_counts': vd['violation_count']
+                    })
+
+        if SMOKE_require_data_details:
+            ret = {'message': SMOKE_require_data_details, 'success': True}
+
+        else:
+            ret['message'] = 'No SMOKE Violations Detected'
+
+    return JsonResponse(ret)
+
+"""CURRENT DATE DUST CAMERAS COUNT"""
+# @camera_status.route('/DUSTviolationCount', methods=['GET','POST'])
+@csrf_exempt
+def DUSTviolationCount(request):
+    result = {'success': False, 'message': 'something went wrong with get DUSTviolationCount api'}    
+    DUSTviolationCount = 0
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        # print(data)
+        request_key_array = ['from_date', 'to_date','camera_name','department']
+        if data != None:
+            jsonobjectarray = list(set(data))
+            # print(jsonobjectarray)
+            missing_key = set(request_key_array).difference(jsonobjectarray)
+            # print(missing_key)
+            if not missing_key:
+                output = [k for k, v in data.items() if v == '']
+                if output:
+                    # print(output)
+                    result['message'] = " ".join(["You have missed these parameters", str(output), ' to enter. please enter properly.']) 
+                else:
+                    from_date = data['from_date']
+                    to_date = data['to_date']
+                    department = data['department']
+                    camera_name =  data['camera_name']
+                    rtsp_url = data['rtsp_url']
+                    # match_data = {'timestamp': {'$gte': from_date, '$lt': to_date}, 'analyticstype': 'firesmoke_data','violation_status': True,
+                                #   'object_data': {'$elemMatch': {'violation': True, '$or': [ { 'roi_details': { '$exists': False } },{ 'roi_details.analytics_type': '0' }]}}}
+                    match_data = {
+                        'timestamp':{'$gte': from_date, '$lte': to_date}, 
+                        'camera_name':  department, #d_data['cameraname'], 
+                        'camera_rtsp':rtsp_url, #d_data['rtsp_url'],
+                        'analytics_details.details.obj_details.class_name':'dust'
+                        }
+                    # FIRE_violation_data = firesmokedustDetails.count_documents(match_data)
+                    # Use distinct to get unique ticket numbers matching the query
+                    distinct_ticket_nos = firesmokeviolationdata.distinct('ticket_no', match_data)
+
+                    # The length of this list gives you the count of unique ticket_no values
+                    # FIRE_violation_data = len(distinct_ticket_nos)
+                    # FIRESMOKEviolationCount = mongo.db.data.count_documents(match_data)
+                    ret = {'success': True, 'message': {'raviolationcount': len(distinct_ticket_nos)}} #FIRESMOKEviolationCount}}
+            else:
+                result = {'message': " ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']), 'success': False}
+        else:
+            result = {'message': " ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']), 'success': False}
+    elif request.method == 'GET':
+        match_data = {
+                        'timestamp': {'$regex': '^' + str(date.today())}, 
+                        # 'camera_name':  department, #d_data['cameraname'], 
+                        # 'camera_rtsp': rtsp_url, #d_data['rtsp_url'],
+                        'analytics_details.details.obj_details.class_name':'dust',
+                        'analytics_details.details.obj_details.violation':True
+                        }
+        
+        distinct_ticket_nos = firesmokeviolationdata.distinct('ticket_no', match_data)
+
+        # # The length of this list gives you the count of unique ticket_no values
+        # DUSTviolationCount = len(distinct_ticket_nos)
+        result = {'success': True, 'message': {'dustviolationcount':len(distinct_ticket_nos)}}  
+    else:
+        result={
+            'success': False,
+            'message':"request type wrong, please try once again."
+        } 
+    return JsonResponse(result)
+
+"""DUST SOLUTION ENABLED CAMERAS """
+# @camera_status.route('/cam_wise_DUST_violations_details', methods=['GET'])
+@csrf_exempt
+def DUST_violations_count_cam_wise(request):
+    ret = {'message': 'Something went wrong cam_wise_DUST_violations_details', 'success': False}
+    if request.method == "GET":
+        find_data_cam_status = ppera_cameras.find({'camera_status': True}, {'cameraname': 1, 'camera_ip': 1, 'rtsp_url': 1, 'imagename': 1, 'firesmoke_data': 1})
+        
+        DUST_require_data_details = []
+        camera_rtsp_urls = []
+        camera_details = {}
+        
+        for find_data in find_data_cam_status:
+            if find_data.get('firesmoke_data'):
+                camera_rtsp_urls.append(find_data['rtsp_url'])
+                camera_details[find_data['rtsp_url']] = {
+                    'camera_name': find_data['cameraname'],
+                    'camera_ip': find_data['camera_ip'],
+                    'rtsp_url': find_data['rtsp_url'],
+                    'imagename': find_data['imagename']
+                }
+        
+        if camera_rtsp_urls:
+            match_data = {
+                            'timestamp': {'$regex': '^' + str(date.today())}, 
+                            'analytics_details.details.obj_details.class_name':'dust',
+                            'analytics_details.details.obj_details.violation':True
+                            }
+            
+            violation_data = firesmokeviolationdata.aggregate([
+                {'$match': match_data},
+                {'$group': {'_id': '$camera_rtsp', 'violation_count': {'$sum': 1}}},
+                {'$sort': {'_id': 1}}
+            ])
+            
+            for vd in violation_data:
+                camera_info = camera_details.get(vd['_id'])
+                if camera_info:
+                    DUST_require_data_details.append({
+                        'camera_name': camera_info['camera_name'],
+                        'camera_ip': camera_info['camera_ip'],
+                        'rtsp_url': camera_info['rtsp_url'],
+                        'imagename': camera_info['imagename'],
+                        'dust_type_counts': vd['violation_count']
+                    })
+
+        if DUST_require_data_details:
+            ret = {'message': DUST_require_data_details, 'success': True}
+
+        else:
+            ret['message'] = 'No DUST Violations Detected'
+
+    return JsonResponse(ret)
+
+"""CURRECT DATE ALL CAMERAS DETAILS violations"""
+# @camera_status.route('/current_date_violations_cam_wise', methods=['GET'])
+@csrf_exempt
+def current_date_violations_details(request):
+    result = {'message': 'something went wrong', 'success': False}
+    if request.method == "GET":
+        today_str = str(date.today())
+
+        try:
+            find_data_cam_status = list(ppera_cameras.find(
+                {'camera_status': True},
+                {'cameraname': 1, 'camera_ip': 1, 'rtsp_url': 1, 'imagename': 1}
+            ))
+
+            if not find_data_cam_status:
+                result['message'] = 'There is no camera added for analytics, please add the camera.'
+                # return jsonify(result)
+                return JsonResponse(result)
+
+            camera_rtsp_urls = [cam['rtsp_url'] for cam in find_data_cam_status]
+
+            pipeline = [
+                {'$match': {
+                    'timestamp': {'$regex': '^' + today_str},
+                    'camera_rtsp': {'$in': camera_rtsp_urls}
+                }},
+                {'$facet': {
+                    'ppe_type_counts': [
+                        {'$match': {
+                            'analyticstype': 'PPE_TYPE1',
+                            '$or': [
+                                {"object_data.Helmet": False},
+                                {"object_data.Vest": "no_ppe"}
+                            ]
+                        }},
+                        {'$group': {'_id': '$camera_rtsp', 'count': {'$sum': 1}}}
+                    ],
+                    'ppe_crash_helemt_counts': [
+                        {'$match': {'analyticstype': 'PPE_TYPE2'}},
+                        {'$group': {'_id': '$camera_rtsp', 'count': {'$sum': 1}}}
+                    ],
+                    'cr_type_counts': [
+                        {'$match': {'analyticstype': 'CRDCNT'}},
+                        {'$group': {'_id': '$camera_rtsp', 'count': {'$sum': 1}}}
+                    ],
+                    'protection_zone_counts': [
+                        {'$match': {
+                            'analyticstype': 'RA',
+                            'violation_status': True,
+                            'object_data': {
+                                '$elemMatch': {
+                                    'violation': True,
+                                    'roi_details': {
+                                        '$exists': True,
+                                        '$elemMatch': {
+                                            'violation': True,
+                                            'analytics_type': '2'
+                                        }
+                                    }
+                                }
+                            }
+                        }},
+                        {'$group': {'_id': '$camera_rtsp', 'count': {'$sum': 1}}}
+                    ],
+                    'roi_type_counts': [
+                        {'$match': {
+                            'analyticstype': 'RA',
+                            'violation_status': True,
+                            'object_data': {
+                                '$elemMatch': {
+                                    'violation': True,
+                                    'roi_details.analytics_type': '0'
+                                }
+                            }
+                        }},
+                        {'$group': {'_id': '$camera_rtsp', 'count': {'$sum': 1}}}
+                    ]
+                }}
+            ]
+
+            violations = list(PPERAVIOLATIONCOLLECTION.aggregate(pipeline))
+            if not violations:
+                result['message'] = 'No violations found'
+                result['success'] = False
+                # return jsonify(result)
+                return JsonResponse(result)
+
+            all_violations = []
+
+            camera_details = {cam['rtsp_url']: cam for cam in find_data_cam_status}
+
+            for violation_type in ['ppe_type_counts', 'ppe_crash_helemt_counts', 'cr_type_counts', 'protection_zone_counts', 'roi_type_counts']:
+                for violation in violations[0][violation_type]:
+                    cam_rtsp = violation['_id']
+                    if cam_rtsp in camera_details:
+                        cam_detail = camera_details[cam_rtsp]
+                        if not any(cam_rtsp == v['rtsp_url'] for v in all_violations):
+                            all_violations.append({
+                                'camera_name': cam_detail['cameraname'],
+                                'camera_ip': cam_detail['camera_ip'],
+                                'rtsp_url': cam_rtsp,
+                                'imagename': cam_detail['imagename'],
+                                'ppe_type_counts': 0,
+                                'ppe_crash_helemt_counts': 0,
+                                'cr_type_counts': 0,
+                                'protection_zone_counts': 0,
+                                'roi_type_counts': 0
+                            })
+
+                        for violation_data in all_violations:
+                            if violation_data['rtsp_url'] == cam_rtsp:
+                                violation_data[violation_type] = violation['count']
+                                break
+
+            if all_violations:
+                result = {'message': all_violations, 'success': True}
+            else:
+                result = {'message': 'No violations found', 'success': False}
+        except Exception as e:
+            result['message'] = f'Error occurred: {str(e)}'
+
+    return JsonResponse(result)
+
+"""DATE WISE ALL VIOLATION COUNTS"""
+# @camera_status.route('/cam_wise_violations_count_by_date', methods=['POST'])
+@csrf_exempt
+def cam_wise_violations_count_by_date(request):
+    result = {'message': 'something went wrong ','success':False}
+    if request.method == "POST":
+        if 1:
+        # try:
+            data = json.loads(request.body)
+            request_key_array = ['from_date', 'to_date']
+            if data != None:
+                jsonobjectarray = list(set(data))
+                missing_key = set(request_key_array).difference(jsonobjectarray)
+                if not missing_key:
+                    output = [k for k, v in data.items() if v == '']
+                    if output:
+                        result['message'] =" ".join(["You have missed these parameters", str(output), ' to enter. please enter properly.']) 
+                    else:
+                        from_date = data['from_date']
+                        to_date = data['to_date']
+                        all_violations=[]
+                        camera_status_true_data = list(ppera_cameras.find({'camera_status': True}))
+                        for find_data in camera_status_true_data:
+                            rtsp_url = find_data['rtsp_url']
+                            """Calling function to get the working camera list and not woorking camera list"""
+                            query_base = {
+                                #'timestamp': {'$regex': '^' + str(date.today())},
+                                'timestamp': {'$gte': from_date,'$lt': to_date},
+                                'camera_rtsp': rtsp_url  # Replace this with actual rtsp_url from find_data
+                            }
+                            print("FOR LOOP0---------------------------------------------------------")
+                            # Aggregation pipeline
+                            pipeline = [
+                                {'$match': query_base},
+                                {
+                                    '$facet': {
+                                        'ppe_type_counts': [
+                                            {'$match': {
+                                                'analyticstype': 'PPE_TYPE1',
+                                                '$or': [
+                                                    {"object_data.Helmet": False},
+                                                    {"object_data.Vest": "no_ppe"}
+                                                ]
+                                            }},
+                                            {'$count': 'count'}
+                                        ],
+                                        'ppe_crash_helemt_counts': [
+                                            {'$match': {'analyticstype': 'PPE_TYPE2'}},
+                                            {'$count': 'count'}
+                                        ],
+                                        'cr_type_counts': [
+                                            {'$match': {'analyticstype': 'CRDCNT'}},
+                                            {'$count': 'count'}
+                                        ],
+                                        'protection_zone_counts': [
+                                            {'$match': {
+                                                'analyticstype': 'RA',
+                                                'violation_status': True,
+                                                'object_data': {
+                                                    '$elemMatch': {
+                                                        'violation': True,
+                                                        'roi_details': {
+                                                            '$exists': True,
+                                                            '$elemMatch': {
+                                                                'violation': True,
+                                                                'analytics_type': '2'
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }},
+                                            {'$count': 'count'}
+                                        ],
+                                        'roi_type_counts': [
+                                            {'$match': {
+                                                'analyticstype': 'RA',
+                                                'violation_status': True,
+                                                'object_data': {
+                                                    '$elemMatch': {
+                                                        'violation': True,
+                                                        'roi_details.analytics_type': '0'
+                                                    }
+                                                }
+                                            }},
+                                            {'$count': 'count'}
+                                        ]
+                                    }
+                                }
+                            ]
+                          
+
+                            print("FOR LOOP0-----------------PIPELINE111111111111----------------------------------------")
+                            # Aggregation firesmoke_pipeline
+                            # firesmoke_pipeline= [
+                            #     {'$match': query_base},
+                            #     {
+                            #         '$facet': {
+                                        
+                            #             'fire_type_counts':[{
+                            #                 'timestamp': {'$regex': '^' + str(date.today())},
+                            #                 'analytics_details.details.obj_details.class_name':'fire',
+                            #                 'analytics_details.details.obj_details.violation':True}, 
+                            #                 {'$count': 'count'}
+                            #                 ],
+
+                            #             'dust_type_counts':[{
+                            #                 'timestamp': {'$regex': '^' + str(date.today())},
+                            #                 'analytics_details.details.obj_details.class_name':'dust',
+                            #                 'analytics_details.details.obj_details.violation':True}, 
+                            #                 {'$count': 'count'}
+                            #                 ],
+                                            
+                            #             'smoke_type_counts':[{
+                            #                 'timestamp': {'$regex': '^' + str(date.today())},
+                            #                 'analytics_details.details.obj_details.class_name':'smoke',
+                            #                 'analytics_details.details.obj_details.violation':True}, 
+                            #                 {'$count': 'count'}
+                            #                 ]
+                            #         }
+                            #     }
+                            # ]
+                            firesmoke_pipeline = [
+                                {'$match': query_base},
+                                {
+                                    '$facet': {
+                                        'fire_type_counts': [
+                                            {'$match': {
+                                                'timestamp': {'$regex': '^' + str(date.today())},
+                                                'analytics_details.details.obj_details.class_name': 'fire',
+                                                'analytics_details.details.obj_details.violation': True
+                                            }},
+                                            {'$count': 'count'}
+                                        ],
+                                        'dust_type_counts': [
+                                            {'$match': {
+                                                'timestamp': {'$regex': '^' + str(date.today())},
+                                                'analytics_details.details.obj_details.class_name': 'dust',
+                                                'analytics_details.details.obj_details.violation': True
+                                            }},
+                                            {'$count': 'count'}
+                                        ],
+                                        'smoke_type_counts': [
+                                            {'$match': {
+                                                'timestamp': {'$regex': '^' + str(date.today())},
+                                                'analytics_details.details.obj_details.class_name': 'smoke',
+                                                'analytics_details.details.obj_details.violation': True
+                                            }},
+                                            {'$count': 'count'}
+                                        ]
+                                    }
+                                }
+                            ]
+
+
+                            # Running the aggregation
+                            result = list(PPERAVIOLATIONCOLLECTION.aggregate(pipeline))
+                            print("FOR LOOP0-----------------PIPELINE2222222222222----------------------------------------")
+                            firesmoke_result = list(firesmokeviolationdata.aggregate(firesmoke_pipeline))
+                            print("FOR LOOP0-----------------PIPELINE2222222222222-------------------11111111111---------------------")
+
+                            # Initialize an empty required_data dictionary
+                            required_data = {}
+                            print("firesmoke_result[0]---------", firesmoke_result)
+                            # Check if any of the counts is greater than zero and build the required_data dictionary
+                            if (result[0]['ppe_type_counts'] and result[0]['ppe_type_counts'][0]['count'] > 0) or \
+                            (result[0]['ppe_crash_helemt_counts'] and result[0]['ppe_crash_helemt_counts'][0]['count'] > 0) or \
+                            (result[0]['cr_type_counts'] and result[0]['cr_type_counts'][0]['count'] > 0) or \
+                            (result[0]['protection_zone_counts'] and result[0]['protection_zone_counts'][0]['count'] > 0) or \
+                            (result[0]['roi_type_counts'] and result[0]['roi_type_counts'][0]['count'] > 0) or \
+                            (firesmoke_result[0]['fire_type_counts'] and firesmoke_result[0]['fire_type_counts'][0]['count'] > 0) or \
+                            (firesmoke_result[0]['dust_type_counts'] and firesmoke_result[0]['dust_type_counts'][0]['count'] > 0) or \
+                            (firesmoke_result[0]['smoke_type_counts'] and firesmoke_result[0]['smoke_type_counts'][0]['count'] > 0):
+                                print("FOR LOOP0-----------------IF COND----------------------------------------")
+
+                                # Add camera details since at least one count is greater than zero
+                                required_data = {
+                                    'camera_name': find_data['cameraname'],
+                                    'camera_ip': find_data['camera_ip'],
+                                    'rtsp_url': rtsp_url,
+                                    'imagename': find_data['imagename'],
+                                    'ppe_type_counts':0,
+                                    'ppe_crash_helemt_counts':0,
+                                    'cr_type_counts':0,
+                                    'protection_zone_counts':0,
+                                    'roi_type_counts':0,
+                                    'fire_type_counts':0,
+                                    'smoke_type_counts':0,
+                                    'dust_type_counts':0,
+                                    
+                                }
+                                print("FOR LOOP0-----------------IF COND---------111111111111-------------------------------")
+
+                                # Add only non-zero counts
+                                if result[0]['ppe_type_counts'] and result[0]['ppe_type_counts'][0]['count'] > 0:
+                                    required_data['ppe_type_counts'] = result[0]['ppe_type_counts'][0]['count']
+
+                                if result[0]['ppe_crash_helemt_counts'] and result[0]['ppe_crash_helemt_counts'][0]['count'] > 0:
+                                    required_data['ppe_crash_helemt_counts'] = result[0]['ppe_crash_helemt_counts'][0]['count']
+
+                                if result[0]['cr_type_counts'] and result[0]['cr_type_counts'][0]['count'] > 0:
+                                    required_data['cr_type_counts'] = result[0]['cr_type_counts'][0]['count']
+
+                                if result[0]['protection_zone_counts'] and result[0]['protection_zone_counts'][0]['count'] > 0:
+                                    required_data['protection_zone_counts'] = result[0]['protection_zone_counts'][0]['count']
+
+                                if result[0]['roi_type_counts'] and result[0]['roi_type_counts'][0]['count'] > 0:
+                                    required_data['roi_type_counts'] = result[0]['roi_type_counts'][0]['count']
+
+                                if firesmoke_result[0]['fire_type_counts'] and firesmoke_result[0]['fire_type_counts'][0]['count'] > 0:
+                                    print("-----------------111111")
+                                    required_data['fire_type_counts'] = firesmoke_result[0]['fire_type_counts'][0]['count']
+
+                                if firesmoke_result[0]['smoke_type_counts'] and firesmoke_result[0]['smoke_type_counts'][0]['count'] > 0:
+                                    print("-----------------2222")
+                                    required_data['smoke_type_count'] = firesmoke_result[0]['smoke_type_counts'][0]['count']
+
+                                if firesmoke_result[0]['dust_type_counts'] and firesmoke_result[0]['dust_type_counts'][0]['count'] > 0:
+                                    print("-----------------3333")
+                                    required_data['dust_type_counts'] = firesmoke_result[0]['dust_type_counts'][0]['count']
+
+                            if required_data != {}:
+                                print("FOR LOOP0-----------------IF COND--IF COndition--------------------------------------")
+                                all_violations.append(required_data)
+
+                        if len(all_violations) !=0:
+                            result = {'message': all_violations, 'success': True}
+                        else:
+                            result= {'message': 'No violations detected for the selected date range' , 'success': False} # 'there is no solution found.'
+                else:
+                    result = {'message':" ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']),'success': False}
+            else:
+                result = {'message': " ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']),'success': False}
+  
+    return JsonResponse(result)
+
+"""DATE WISE PPE VIOLATION COUNTS"""
+# @camera_status.route('/cam_wise_PPE_violations_by_date', methods=['POST'])
+@csrf_exempt
+def date_wise_ppe_violations_details(request):
+    ret = {'message': 'something went wrong in date_wise_PPE_violations_details API.','success': False}
+    if request.method== "POST":
+        if 1:
+            data = json.loads(request.body)
+            request_key_array = ['from_date', 'to_date']
+            if data != None:
+                jsonobjectarray = list(set(data))
+                missing_key = set(request_key_array).difference(jsonobjectarray)
+                if not missing_key:
+                    output = [k for k, v in data.items() if v == '']
+                    if output:
+                        ret['message'] =" ".join(["You have missed these parameters", str(output), ' to enter. please enter properly.']) 
+                    else:
+                        print("#########################################################################-----222222222222")
+                        from_date = data['from_date']
+                        to_date = data['to_date']
+            
+                        find_data_cam_status = list(ppera_cameras.find({'camera_status': True,'ppe_data':{'$exists':True,"$ne": []}}))
+                        # print(find_data_cam_status)
+                        if len(find_data_cam_status) !=0 :
+                            ppe_require_data = []
+                            for let, ppe_da in enumerate(find_data_cam_status):
+                                ppe_values = ppe_da['ppe_data'] #[0]
+                                if type(ppe_da['ppe_data'][0]) == dict and (ppe_values[0]['helmet'] == True or ppe_values[0]['vest'] == True):
+                                    match_data = {'timestamp': {'$gte': from_date,'$lt': to_date}, 'camera_rtsp': ppe_da['rtsp_url'], 'analyticstype': 'PPE_TYPE1'}
+                                    # ppe_data = list(mongo.db.data.aggregate([{'$match': match_data}, {'$sort': {'timestamp': -1}}]))                   
+                                    PPEViolationCount = PPERAVIOLATIONCOLLECTION.count_documents(match_data)
+                                    if PPEViolationCount != 0:
+                                        # ppe_count = fun_ppe_violations_count(ppe_data)
+                                        # if ppe_count["ppe_counts"] != 0:
+                                        ppe_require_data.append({'camera_name':ppe_da['cameraname'], 'camera_ip': ppe_da[ 'camera_ip'], 'rtsp_url': ppe_da['rtsp_url'], 'imagename': ppe_da['imagename'], 'ppe_type_counts': PPEViolationCount}) # ppe_count["ppe_counts"], 'helmet_count':ppe_count["helmet_cnts"], 'vest_count':ppe_count["vest_cnts"]}) #ppe_count}) #len(ppe_data)})
+                                    # else:
+                                    #     ppe_require_data.append({'camera_name': ppe_da['cameraname'], 'camera_ip': ppe_da['camera_ip'], 'rtsp_url': ppe_da['rtsp_url'], 'imagename': ppe_da['imagename'], 'ppe_type_counts':len(ppe_data), 'helmet_count':0, 'vest_count':0})
+
+                            if len(ppe_require_data) != 0:
+                                ret = {'message': ppe_require_data, 'success': True}
+                            else:
+                                ret['message'] = 'No PPE violations detected for the selected date range' #'ppe data not found.'
+                        else:
+                            ret['message']= "No cameras have been added for PPE analytics. Please add a camera" #'there no camera enabled for ppe,please add camera and enable for ppe'
+
+                else:
+                    ret = {'message':" ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']),'success': False}
+            else:
+                ret = {'message': " ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']),'success': False}
+        # except ( 
+        #     pymongo.errors.AutoReconnect,            pymongo.errors.BulkWriteError,             pymongo.errors.PyMongoError, 
+        #     pymongo.errors.ProtocolError,             pymongo.errors.CollectionInvalid ,             pymongo.errors.ConfigurationError,
+        #     pymongo.errors.ConnectionFailure,             pymongo.errors.CursorNotFound,             pymongo.errors.DocumentTooLarge,
+        #     pymongo.errors.DuplicateKeyError,             pymongo.errors.EncryptionError,             pymongo.errors.ExecutionTimeout,
+        #     pymongo.errors.InvalidName,             pymongo.errors.InvalidOperation,             pymongo.errors.InvalidURI,
+        #     pymongo.errors.NetworkTimeout,             pymongo.errors.NotPrimaryError,             pymongo.errors.OperationFailure,
+        #     pymongo.errors.ProtocolError,             pymongo.errors.PyMongoError,             pymongo.errors.ServerSelectionTimeoutError,
+        #     pymongo.errors.WTimeoutError,                           pymongo.errors.WriteConcernError,
+        #     pymongo.errors.WriteError) as error:
+        #     ERRORLOGdata(" ".join(["\n", "[ERROR] camera_status_api -- ppe_violations_count_cam_wise 1", str(error), " ----time ---- ", now_time_with_time()])) 
+        #     ret['message' ] = " ".join(["something error has occured in  apis", str(error), " ----time ---- ", now_time_with_time()]) 
+        #     if restart_mongodb_r_service():
+        #         print("mongodb restarted")
+        #     else:
+        #         if forcerestart_mongodb_r_service():
+        #             print("mongodb service force restarted-")
+        #         else:
+        #             print("mongodb service is not yet started.")
+        # except Exception as error:
+        #     ret['message']=" ".join(["something error has occured in  apis", str(error)]) 
+        #     ERRORLOGdata(" ".join(["\n", "[ERROR] camera_status_api -- ppe_violations_count_cam_wise 2", str(error), " ----time ---- ", now_time_with_time()]))          
+    return JsonResponse(ret)
+
+
+"""DATE WISE RA VIOLATION COUNTS"""
+# @camera_status.route('/cam_wise_RA_violations_by_date', methods=['POST']) 
+@csrf_exempt
+def date_wise_RA_violations_counts(request):
+    ret = {'message': 'something went wrong in date_wise_RA_violations_details API.', 'success': False}
+    if request.method == "POST":
+        # try:
+        data = json.loads(request.body)
+        print('------cam_wise_RA_violations_by_date------------------data----------',data)
+        request_key_array = ['from_date', 'to_date']
+
+        if data:
+            missing_keys = set(request_key_array) - data.keys()
+            if missing_keys:
+                ret['message'] = f"You have missed these keys: {', '.join(missing_keys)}. Please enter them properly."
+                return JsonResponse(ret)
+            
+            output = [key for key in request_key_array if not data[key]]
+            if output:
+                ret['message'] = f"You have missed these parameters: {', '.join(output)}. Please enter them properly."
+                return JsonResponse(ret)
+
+            # from_date = datetime.strptime(data['from_date'], "%Y-%m-%d")
+            # to_date = datetime.strptime(data['to_date'], "%Y-%m-%d")
+
+            find_data_cam_status = list(ppera_cameras.find({
+                'camera_status': True,
+                'roi_data': {'$exists': True, "$ne": []}
+            }))
+
+            if find_data_cam_status:
+                roi_require_data_details = []
+
+                for find_data in find_data_cam_status:
+                    roi_data = find_data['roi_data']
+                    if roi_data:
+                        match_data = {
+                            'timestamp': {'$gte': data['from_date'], '$lt': data['to_date']},
+                            'camera_rtsp': find_data['rtsp_url'],
+                            'analyticstype': 'RA',
+                            'violation_status': True,
+                            'object_data': {
+                                '$elemMatch': {
+                                    'violation': True,
+                                    'roi_details.analytics_type': '0'
+                                }
+                            }
+                        }
+
+                        violation_data =PPERAVIOLATIONCOLLECTION.count_documents(match_data)
+
+                        if violation_data > 0:
+                            roi_require_data = {
+                                'camera_name': find_data['cameraname'],
+                                'camera_ip': find_data['camera_ip'],
+                                'rtsp_url': find_data['rtsp_url'],
+                                'imagename': find_data['imagename'],
+                                'roi_type_counts': violation_data
+                            }
+                            roi_require_data_details.append(roi_require_data)
+                
+                print("roi_require_data_details000000000000000", roi_require_data_details)
+                if roi_require_data_details:
+                    print("roi_require_data_detailsroi_require_data_details", roi_require_data_details)
+                    ret = {'message': roi_require_data_details, 'success': True} 
+
+                else:
+                    ret['message'] = 'No RA violations detected for the selected date range' #'There is no data found for RA camera.'
+            else:
+                ret['message'] = "No cameras have been added for RA analytics. Please add a camera." #'There are no cameras added for RA analytics. Please add the camera.'
+        else:
+            ret['message'] = "You have missed these keys: from_date, to_date. Please enter them properly."
+        # except Exception as e:
+        #     ret['message'] = str(e)
+
+    
+        # except ( 
+        #     pymongo.errors.AutoReconnect,            pymongo.errors.BulkWriteError,             pymongo.errors.PyMongoError, 
+        #     pymongo.errors.ProtocolError,             pymongo.errors.CollectionInvalid ,             pymongo.errors.ConfigurationError,
+        #     pymongo.errors.ConnectionFailure,             pymongo.errors.CursorNotFound,             pymongo.errors.DocumentTooLarge,
+        #     pymongo.errors.DuplicateKeyError,             pymongo.errors.EncryptionError,             pymongo.errors.ExecutionTimeout,
+        #     pymongo.errors.InvalidName,             pymongo.errors.InvalidOperation,             pymongo.errors.InvalidURI,
+        #     pymongo.errors.NetworkTimeout,             pymongo.errors.NotPrimaryError,             pymongo.errors.OperationFailure,
+        #     pymongo.errors.ProtocolError,             pymongo.errors.PyMongoError,             pymongo.errors.ServerSelectionTimeoutError,
+        #     pymongo.errors.WTimeoutError,                           pymongo.errors.WriteConcernError,
+        #     pymongo.errors.WriteError) as error:
+        #     ERRORLOGdata(" ".join(["\n", "[ERROR] camera_status_api -- ppe_violations_count_cam_wise 1", str(error), " ----time ---- ", now_time_with_time()])) 
+        #     ret['message' ] = " ".join(["something error has occured in  apis", str(error), " ----time ---- ", now_time_with_time()]) 
+        #     if restart_mongodb_r_service():
+        #         print("mongodb restarted")
+        #     else:
+        #         if forcerestart_mongodb_r_service():
+        #             print("mongodb service force restarted-")
+        #         else:
+        #             print("mongodb service is not yet started.")
+        # except Exception as error:
+        #     ret['message']=" ".join(["something error has occured in  apis", str(error)]) 
+        #     ERRORLOGdata(" ".join(["\n", "[ERROR] camera_status_api -- ppe_violations_count_cam_wise 2", str(error), " ----time ---- ", now_time_with_time()]))          
+    return JsonResponse(ret)
+
+"""DATE WISE CR VIOLATION COUNTS"""
+# @camera_status.route('/cam_wise_CR_violations_by_date', methods=['POST'])
+@csrf_exempt
+def date_wise_CR_violations_cam_details(request):
+    ret = {'message': 'something went wrong in date_wise_CR_violations_details API.','success': False}
+    if request.method == "POST":
+        if 1:
+            data = json.loads(request.body)
+            request_key_array = ['from_date', 'to_date']
+            if data != None:
+                jsonobjectarray = list(set(data))
+                missing_key = set(request_key_array).difference(jsonobjectarray)
+                if not missing_key:
+                    output = [k for k, v in data.items() if v == '']
+                    if output:
+                        ret['message'] =" ".join(["You have missed these parameters", str(output), ' to enter. please enter properly.']) 
+                    else:
+                        print("#########################################################################-----222222222222")
+                        from_date = data['from_date']
+                        to_date = data['to_date']
+                        find_data_cam_status = list(ppera_cameras.find({'camera_status': True,'cr_data':{'$exists':True,"$ne": []}}))
+                        if len(find_data_cam_status) !=0:
+                            cr_require_data_details = []
+                            for find_data in find_data_cam_status:
+                                match_data = {'timestamp': {'$gte': from_date,'$lt': to_date}, 'camera_rtsp': find_data['rtsp_url'], 'analyticstype': 'CRDCNT'}
+                                FoundCrData = list(PPERAVIOLATIONCOLLECTION.aggregate([{'$match': match_data}, { '$sort': {'timestamp': -1}}]))
+                                if len(FoundCrData) != 0:
+                                    cr_require_data = {'camera_name': find_data['cameraname'],'camera_ip': find_data['camera_ip'], 'rtsp_url': find_data['rtsp_url'], 'imagename': find_data['imagename'],'cr_type_counts': len(FoundCrData)}
+                                    if (cr_require_data not in cr_require_data_details):
+                                        cr_require_data_details.append(cr_require_data)
+                            if len(cr_require_data_details) !=0:
+                                ret = {'message': cr_require_data_details, 'success': True}
+                            else:
+                                ret['message']= "No CR violations detected for the selected date range." #'there is no violation found.'
+                        else:
+                            ret['message']= "No cameras have been added for CR analytics. Please add a camera." #'there is no camera added.'        
+        # except ( 
+        #     pymongo.errors.AutoReconnect,            pymongo.errors.BulkWriteError,             pymongo.errors.PyMongoError, 
+        #     pymongo.errors.ProtocolError,             pymongo.errors.CollectionInvalid ,             pymongo.errors.ConfigurationError,
+        #     pymongo.errors.ConnectionFailure,             pymongo.errors.CursorNotFound,             pymongo.errors.DocumentTooLarge,
+        #     pymongo.errors.DuplicateKeyError,             pymongo.errors.EncryptionError,             pymongo.errors.ExecutionTimeout,
+        #     pymongo.errors.InvalidName,             pymongo.errors.InvalidOperation,             pymongo.errors.InvalidURI,
+        #     pymongo.errors.NetworkTimeout,             pymongo.errors.NotPrimaryError,             pymongo.errors.OperationFailure,
+        #     pymongo.errors.ProtocolError,             pymongo.errors.PyMongoError,             pymongo.errors.ServerSelectionTimeoutError,
+        #     pymongo.errors.WTimeoutError,                           pymongo.errors.WriteConcernError,
+        #     pymongo.errors.WriteError) as error:
+        #     ERRORLOGdata(" ".join(["\n", "[ERROR] camera_status_api -- CR_violations_count_cam_wise 1", str(error), " ----time ---- ", now_time_with_time()]))   
+        #     ret['message' ] = " ".join(["something error has occured in  apis", str(error), " ----time ---- ", now_time_with_time()]) 
+        #     if restart_mongodb_r_service():
+        #         print("mongodb restarted")
+        #     else:
+        #         if forcerestart_mongodb_r_service():
+        #             print("mongodb service force restarted-")
+        #         else:
+        #             print("mongodb service is not yet started.")
+        # except Exception as error:
+        #     ret['message']=" ".join(["something error has occured in  apis", str(error)]) 
+        #     ERRORLOGdata(" ".join(["\n", "[ERROR] camera_status_api -- CR_violations_count_cam_wise 2", str(error), " ----time ---- ", now_time_with_time()]))         
+    return JsonResponse(ret)
+
+"""DATE WISE CRASH HELMET PPE VIOLATION COUNTS"""
+# @camera_status.route('/cam_wise_PPE_crash_helmet_violations_by_date', methods=['POST'])
+@csrf_exempt
+def date_wise_ppe_crash_helmet_violations_details(request):
+    ret = {'message': 'something went wrong in date_wise_PPE_violations_details API.','success': False}
+    if request.method == "POST":
+        if 1:
+            data = json.loads(request.body)
+            request_key_array = ['from_date', 'to_date']
+            if data != None:
+                jsonobjectarray = list(set(data))
+                missing_key = set(request_key_array).difference(jsonobjectarray)
+                if not missing_key:
+                    output = [k for k, v in data.items() if v == '']
+                    if output:
+                        ret['message'] =" ".join(["You have missed these parameters", str(output), ' to enter. please enter properly.']) 
+                    else:
+                        from_date = data['from_date']
+                        to_date = data['to_date']
+            
+                        find_data_cam_status = list(ppera_cameras.find({'camera_status': True,'ppe_data':{'$exists':True,"$ne": []}}))
+                        if len(find_data_cam_status) !=0 :
+                            ppe_require_data = []
+                            for let, ppe_da in enumerate(find_data_cam_status):
+                                ppe_values = ppe_da['ppe_data'] #[0]
+                                if type(ppe_da['ppe_data'][0]) == dict and (ppe_values[0]['helmet'] == True or ppe_values[0]['vest'] == True):
+                                    match_data = {'timestamp': {'$gte': from_date,'$lt': to_date}, 'camera_rtsp': ppe_da['rtsp_url'], 'analyticstype': 'PPE_TYPE2'}
+                                    ppe_data = list(PPERAVIOLATIONCOLLECTION.aggregate([{'$match': match_data}, {'$sort': {'timestamp': -1}}])) 
+                                    if len(ppe_data) != 0:
+                                        # crash_helmet_counts = fun_ppe_crash_helmet_violations_count(ppe_data)
+                                        ppe_require_data.append({'camera_name':ppe_da['cameraname'], 'camera_ip': ppe_da[ 'camera_ip'], 'rtsp_url': ppe_da['rtsp_url'], 'imagename': ppe_da['imagename'], 'crash_helmet_count': len(ppe_data)}) # crash_helmet_counts["crash_helmet_cnts"]}) #ppe_count}) #len(ppe_data)})
+                                    # else:
+                                    #     ppe_require_data.append({'camera_name': ppe_da['cameraname'], 'camera_ip': ppe_da['camera_ip'], 'rtsp_url': ppe_da['rtsp_url'], 'imagename': ppe_da['imagename'], 'crash_helmet_count':0})
+
+                            if len(ppe_require_data) != 0:
+                                ret = {'message': ppe_require_data, 'success': True}
+                            else:
+                                ret['message'] = "No CRASH-HELMET violations detected for the selected date range." #'ppe data not found.'
+                        else:
+                            ret['message']= "No cameras have been added for CRASH-HELMET analytics. Please add a camera." #'there no camera enabled for ppe,please add camera and enable for ppe'
+
+                else:
+                    ret = {'message':" ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']),'success': False}
+            else:
+                ret = {'message': " ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']),'success': False}
+    return JsonResponse(ret)
+
+"""DATE WISE Truck REVERSAL VIOLATION COUNTS"""
+# @camera_status.route('/cam_wise_truck_reversal_RA_violations_by_date', methods=['POST'])
+@csrf_exempt
+def cam_wise_truck_reversal_RA_violations_by_date(request):
+    ret = {'message': 'something went wrong in date_wise_RA_violations_details API.','success': False}
+    if request.method == "POST":
+        if 1:
+            data = json.loads(request.body)
+            request_key_array = ['from_date', 'to_date']
+            if data != None:
+                jsonobjectarray = list(set(data))
+                missing_key = set(request_key_array).difference(jsonobjectarray)
+                if not missing_key:
+                    output = [k for k, v in data.items() if v == '']
+                    if output:
+                        ret['message'] =" ".join(["You have missed these parameters", str(output), ' to enter. please enter properly.']) 
+                    else:
+                        from_date = data['from_date']
+                        to_date = data['to_date']
+            
+                        find_data_cam_status = list(ppera_cameras.find({'camera_status': True, 'roi_data':{'$exists':True,"$ne": []}}))
+                        if len(find_data_cam_status) !=0:
+                            roi_require_data_details = []
+                            for find_data in find_data_cam_status:
+                                """Calling function to get the working camera list and not woorking camera list"""
+                                # match_data = {'timestamp': {'$gte': from_date,'$lt': to_date}, 'camera_rtsp': find_data['rtsp_url']}
+                                roi_data = find_data['roi_data']
+                                if len(roi_data) != 0:
+                                    # match_data['analyticstype']='RA'
+                                    match_data = {'timestamp':{'$gte': from_date,'$lt': to_date},'camera_rtsp': find_data['rtsp_url'],
+                                'analyticstype': 'RA',
+                                'violation_status': True,
+                                'object_data': {
+                                                    '$elemMatch': {
+                                                        'violation': True,
+                                                        'roi_details': {
+                                                            '$exists': True,
+                                                            '$elemMatch': {
+                                                                'violation': True,
+                                                                'analytics_type': '2'
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                }
+                                    ViolationFOUNDDATAfinddata = list(PPERAVIOLATIONCOLLECTION.aggregate([{'$match': match_data}, {'$sort': {'_id': -1}}]))
+                                    roi_require_data = {'camera_name': find_data['cameraname'], 'camera_ip': find_data['camera_ip'], 'rtsp_url': find_data['rtsp_url'], 'imagename':find_data['imagename'],'protection_zone_type_counts': len(ViolationFOUNDDATAfinddata)}
+                                    if (roi_require_data not in roi_require_data_details):
+                                        roi_require_data_details.append(roi_require_data)
+                            if len(roi_require_data_details) !=0:
+                                ret = {'message': roi_require_data_details, 'success': True} 
+                            else:
+                                ret['message']= "No PROTECTED-ZONE violations detected for the selected date range." #'there is no data found for RA camera .'
+                        else:
+                            ret['message']= "No cameras have been added for PROTECTED-ZONE analytics. Please add a camera." #'there are no cameras are added for analytics please add the camera.'
+
+                else:
+                    ret = {'message':" ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']),'success': False}
+            else:
+                ret = {'message': " ".join(["You have missed these keys", str(missing_key), ' to enter. please enter properly.']),'success': False}
+        # except ( 
+        #     pymongo.errors.AutoReconnect,            pymongo.errors.BulkWriteError,             pymongo.errors.PyMongoError, 
+        #     pymongo.errors.ProtocolError,             pymongo.errors.CollectionInvalid ,             pymongo.errors.ConfigurationError,
+        #     pymongo.errors.ConnectionFailure,             pymongo.errors.CursorNotFound,             pymongo.errors.DocumentTooLarge,
+        #     pymongo.errors.DuplicateKeyError,             pymongo.errors.EncryptionError,             pymongo.errors.ExecutionTimeout,
+        #     pymongo.errors.InvalidName,             pymongo.errors.InvalidOperation,             pymongo.errors.InvalidURI,
+        #     pymongo.errors.NetworkTimeout,             pymongo.errors.NotPrimaryError,             pymongo.errors.OperationFailure,
+        #     pymongo.errors.ProtocolError,             pymongo.errors.PyMongoError,             pymongo.errors.ServerSelectionTimeoutError,
+        #     pymongo.errors.WTimeoutError,                           pymongo.errors.WriteConcernError,
+        #     pymongo.errors.WriteError) as error:
+        #     ERRORLOGdata(" ".join(["\n", "[ERROR] camera_status_api -- ppe_violations_count_cam_wise 1", str(error), " ----time ---- ", now_time_with_time()])) 
+        #     ret['message' ] = " ".join(["something error has occured in  apis", str(error), " ----time ---- ", now_time_with_time()]) 
+        #     if restart_mongodb_r_service():
+        #         print("mongodb restarted")
+        #     else:
+        #         if forcerestart_mongodb_r_service():
+        #             print("mongodb service force restarted-")
+        #         else:
+        #             print("mongodb service is not yet started.")
+        # except Exception as error:
+        #     ret['message']=" ".join(["something error has occured in  apis", str(error)]) 
+        #     ERRORLOGdata(" ".join(["\n", "[ERROR] camera_status_api -- ppe_violations_count_cam_wise 2", str(error), " ----time ---- ", now_time_with_time()]))          
+    return JsonResponse(ret)
