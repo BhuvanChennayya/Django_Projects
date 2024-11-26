@@ -40,3 +40,4 @@ MEchHydracollection = DATABASE['hydra_data']
 
 
 firesmokeviolationdata=DATABASE["firesmokeviolationdata"]
+coin_id_violation_data=DATABASE["coin_id_violation_data"]

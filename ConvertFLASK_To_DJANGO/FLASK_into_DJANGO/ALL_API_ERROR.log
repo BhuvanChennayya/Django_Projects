@@ -6,3 +6,9 @@
  [ERROR] packages -- split_rtsp_url 1 list index out of range  ----time ----  2024-11-25 13:46:48
 
  [ERROR] camera_api -- add_camera_rtsp 5 expected string or bytes-like object  ----time ----  2024-11-25 13:46:48
+
+ [ERROR] camera_coin_apis -- get_samplefileFORCHECKCAMERA 1 Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.  ----time ----  2024-11-26 14:01:20
