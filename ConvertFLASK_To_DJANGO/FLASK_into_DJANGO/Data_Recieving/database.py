@@ -41,3 +41,8 @@ MEchHydracollection = DATABASE['hydra_data']
 
 firesmokeviolationdata=DATABASE["firesmokeviolationdata"]
 coin_id_violation_data=DATABASE["coin_id_violation_data"]
+firesmokecamerastatus=DATABASE["firesmokecamerastatus"]
+voice_announcement_status=DATABASE["voice_announcement_status"]
+rtsp_flag=DATABASE["rtsp_flag"]
+VEHICLE_PARKING_MANAGEMENT_DATA=DATABASE["VEHICLE_PARKING_MANAGEMENT_DATA"]
+VPMS_DATA=DATABASE["VPMS_DATA"]

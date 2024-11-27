@@ -37,9 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'DashBoard',
     'camera_status_api',
     "camera_coin_api",
+    'fire_smoke_config',
+    'parking_manage_data'
 ]
 
 MIDDLEWARE = [

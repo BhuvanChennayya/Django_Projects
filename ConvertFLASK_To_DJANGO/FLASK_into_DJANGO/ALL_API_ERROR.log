@@ -12,3 +12,41 @@
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.  ----time ----  2024-11-26 14:01:20
+
+ [ERROR] camera_api -- delete_cr_data 1 'firesmoke_data'  ----time ----  2024-11-27 05:43:10
+
+ [ERROR] dashboard_apis -- get_roi_image 1 Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.  ----time ----  2024-11-27 06:48:19
+
+ [ERROR] dashboard_apis -- get_roi_image 1 Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.  ----time ----  2024-11-27 06:49:58
+
+ [ERROR] dashboard_apis -- get_roi_image 1 Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.  ----time ----  2024-11-27 06:53:47
+
+ [ERROR] dashboard_apis -- get_roi_image 1 Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.  ----time ----  2024-11-27 06:53:49
+
+ [ERROR] dashboard_apis -- get_roi_image 1 Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.  ----time ----  2024-11-27 06:53:56
+
+ [ERROR] dashboard_apis -- get_roi_image 1 Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.  ----time ----  2024-11-27 06:59:58

@@ -18,6 +18,8 @@ from django.urls import path,include
 import DashBoard.urls 
 import camera_status_api.urls
 import camera_coin_api.urls
+import fire_smoke_config.urls
+import parking_manage_data.urls
 
 
 urlpatterns = [
@@ -25,6 +27,8 @@ urlpatterns = [
     # path('DashBoard/', include(DashBoard.urls)),
     path('camera_status_api/', include(camera_status_api.urls)),
     path('camera_coin_api/', include(camera_coin_api.urls)),
+    path('fire_smoke_config/', include(fire_smoke_config.urls)),
+    path('parking_manage_data/', include(parking_manage_data.urls)),
 
 
 ]

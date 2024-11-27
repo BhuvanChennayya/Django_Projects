@@ -34,7 +34,15 @@ urlpatterns=[
     path("getviolationvideo/<video_name>",views.CoinviolationVideo,name="getviolationvideo/<video_name>"),
     path("getcoinidlist",views.COinidlist,name="getcoinidlist"),
     path("getcoinidcameralist",views.getcoinidcameralist,name="getcoinidcameralist"),
-    path("get_samplefileFORCHECKCAMERA",views.get_obj_img,name="get_samplefileFORCHECKCAMERA"),
     path("add_firesmoke",views.add_firesmoke,name="add_firesmoke"),
+
+
+    path("addfsddata",views.Newformatefsddataadding,name="addfsddata"),
+    path("edit_fsd",views.edit_fsd,name="edit_fsd"),
+    path("addfsdstaticparameters",views.addfsdstaticparameters,name="addfsdstaticparameters"),
+    path("delete_fsddata",views.delete_fsddata,name="delete_fsddata"),
+    path("edit_preset",views.edit_preset,name="edit_preset"),
+    path("delete_preset",views.delete_preset,name="delete_preset"),
+    path("delete_firesmoke",views.delete_firesmoke,name="delete_firesmoke"),
 
 ]

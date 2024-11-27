@@ -4294,3 +4294,495 @@ def add_firesmoke(request):
             ret['message'] = " ".join(["you have missed these keys ",str(missing_key), ' to enter. please enter properly.' ]) 
     return JsonResponse(ret)
 
+
+#27/11/2024
+
+# @camera_coin.route('/addfsddata', methods=['POST'])
+@csrf_exempt
+def Newformatefsddataadding(request):
+    ret = {'success': False, 'message': 'something went wrong with add roi api'}
+    if request.method == "POST":
+        data = json.loads(request.body)
+        if data == None:
+            data = {}
+        request_key_array = ['id', 'firesmoke_data', 'ai_solutions']
+        jsonobjectarray = list(set(data))
+        missing_key = set(request_key_array).difference(jsonobjectarray)
+        if not missing_key:
+            output = [k for k, v in data.items() if v == '']
+            if output:
+                ret['message'] = " ".join(["You have missed these parameters ",str(output), ' to enter. please enter properly.' ]) 
+            else:
+                id = data['id']
+                firesmoke_data = data['firesmoke_data']
+                print("firesmoke_datafiresmoke_data:-------------------", firesmoke_data)
+                ai_solutions = data['ai_solutions']
+                finddata = ppera_cameras.find_one({'_id': ObjectId(id)})
+                if finddata is not None:
+                    if firesmoke_data is not None:
+                        if type(firesmoke_data) == dict:
+                            if len(firesmoke_data) != 0:
+                                if "firesmoke_data" in finddata:
+                                    if firesmoke_data == finddata['firesmoke_data']:
+                                        ret['message'] = 'fire and smoke data same as previous data.'
+                                    else:
+                                        if ai_solutions is not None:
+                                            if isEmpty(ai_solutions) :
+                                                finddata['ai_solution'].update(ai_solutions)
+                                                result = (ppera_cameras.update_one({'_id': ObjectId(id)}, {'$set': {'firesmoke_data.roi_parameters': firesmoke_data['roi_parameters'],'ai_solution': finddata['ai_solution']}}))
+                                                if result.modified_count > 0:
+                                                    ret = {'message': 'firesmoke_data added successfully.','success': True}
+                                                else:
+                                                    ret['message'] = 'firesmoke_data not adeed.'
+                                            else:
+                                                ret['message'] = 'please give proper ai_solutions, al_solutions should not None type or empty.'
+                                        else:
+                                            ret['message'] = 'please give proper ai_solutions.'
+                                else:
+                                    if ai_solutions is not None:
+                                        if isEmpty(ai_solutions) :
+                                            finddata['ai_solution'].update(ai_solutions)
+                                            result = (ppera_cameras.update_one({'_id': ObjectId(id)}, {'$set': {'firesmoke_data.roi_parameters': firesmoke_data['roi_parameters'],'ai_solution': finddata['ai_solution']}}))
+                                            if result.modified_count > 0:
+                                                ret = {'message': 'firesmoke_data added successfully.','success': True}
+                                            else:
+                                                ret['message'] = 'firesmoke_data not adeed.'
+                                        else:
+                                            ret['message'] = 'please give proper ai_solutions, al_solutions should not None type or empty.'
+                                    else:
+                                        ret['message'] = 'please give proper ai_solutions.'                                
+                            else:
+                                ret['message'] = 'please give proper input data, try once again.'
+                        else:
+                            ret['message'] = 'please give proper fire and smoke data, it should be list type.'
+                    else:
+                        ret['message'] = 'please give proper fire and smoke data, it should not none type.'
+                else:
+                    ret['message'] = 'for this particular id, there is no such camera data exists.'
+        else:
+            ret['message'] = " ".join(["you have missed these keys ",str(missing_key), ' to enter. please enter properly.' ]) 
+    return JsonResponse(ret)
+
+
+
+# @camera_coin.route('/edit_fsd', methods=['POST'])
+@csrf_exempt
+def edit_fsd(request):
+    ret = {'success': False, 'message': 'something went wrong with add roi api'}
+    if request.method == "POST":
+        data = json.loads(request.body)
+        if data == None:
+            data = {}
+        request_key_array = ['id', 'firesmoke_data', 'ai_solutions','roi_id']
+        jsonobjectarray = list(set(data))
+        missing_key = set(request_key_array).difference(jsonobjectarray)
+        if not missing_key:
+            output = [k for k, v in data.items() if v == '']
+            if output:
+                ret['message'] = " ".join(["You have missed these parameters ",str(output), ' to enter. please enter properly.' ]) 
+            else:
+                id = data['id']
+                firesmoke_data = data['firesmoke_data']
+                print("firesmoke_datafiresmoke_data:-------------------", firesmoke_data)
+                ai_solutions = data['ai_solutions']
+                finddata = ppera_cameras.find_one({'_id': ObjectId(id)})
+                if finddata is not None:
+                    if firesmoke_data is not None:
+                        if type(firesmoke_data) == dict:
+                            if len(firesmoke_data) != 0:
+                                if "firesmoke_data" in finddata:
+                                    if firesmoke_data == finddata['firesmoke_data']:
+                                        ret['message'] = 'fire and smoke data same as previous data.'
+                                    else:
+                                        if ai_solutions is not None:
+                                            if isEmpty(ai_solutions) :
+                                                finddata['ai_solution'].update(ai_solutions)
+                                                result = (ppera_cameras.update_one({'_id': ObjectId(id)}, {'$set': {'firesmoke_data.roi_parameters': firesmoke_data['roi_parameters'],'ai_solution': finddata['ai_solution']}}))
+                                                if result.modified_count > 0:
+                                                    ret = {'message': 'firesmoke_data added successfully.','success': True}
+                                                else:
+                                                    ret['message'] = 'firesmoke_data not adeed.'
+                                            else:
+                                                ret['message'] = 'please give proper ai_solutions, al_solutions should not None type or empty.'
+                                        else:
+                                            ret['message'] = 'please give proper ai_solutions.'
+                                else:
+                                    if ai_solutions is not None:
+                                        if isEmpty(ai_solutions) :
+                                            finddata['ai_solution'].update(ai_solutions)
+                                            result = (ppera_cameras.update_one({'_id': ObjectId(id)}, {'$set': {'firesmoke_data.roi_parameters': firesmoke_data['roi_parameters'],'ai_solution': finddata['ai_solution']}}))
+                                            if result.modified_count > 0:
+                                                ret = {'message': 'firesmoke_data added successfully.','success': True}
+                                            else:
+                                                ret['message'] = 'firesmoke_data not adeed.'
+                                        else:
+                                            ret['message'] = 'please give proper ai_solutions, al_solutions should not None type or empty.'
+                                    else:
+                                        ret['message'] = 'please give proper ai_solutions.'                                
+                            else:
+                                ret['message'] = 'please give proper input data, try once again.'
+                        else:
+                            ret['message'] = 'please give proper fire and smoke data, it should be list type.'
+                    else:
+                        ret['message'] = 'please give proper fire and smoke data, it should not none type.'
+                else:
+                    ret['message'] = 'for this particular id, there is no such camera data exists.'
+        else:
+            ret['message'] = " ".join(["you have missed these keys ",str(missing_key), ' to enter. please enter properly.' ]) 
+    return JsonResponse(ret)
+
+# @camera_coin.route('/addfsdstaticparameters', methods=['POST'])
+@csrf_exempt
+def addfsdstaticparameters(request):
+    ret = {'success': False, 'message': 'something went wrong with add roi api'}
+    if request.method == "POST":
+        data = json.loads(request.body)
+        if data == None:
+            data = {}
+        request_key_array = ['id', 'static_parameters']
+        jsonobjectarray = list(set(data))
+        missing_key = set(request_key_array).difference(jsonobjectarray)
+        if not missing_key:
+            output = [k for k, v in data.items() if v == '']
+            if output:
+                ret['message'] = " ".join(["You have missed these parameters ",str(output), ' to enter. please enter properly.' ]) 
+            else:
+                id = data['id']
+                firesmoke_data = data['static_parameters']
+                finddata = ppera_cameras.find_one({'_id': ObjectId(id)})
+                if finddata is not None:
+                    if firesmoke_data is not None:
+                        if type(firesmoke_data) == dict:
+                            if len(firesmoke_data) != 0:
+                                if "firesmoke_data" in finddata:
+                                    if firesmoke_data == finddata['firesmoke_data']:
+                                        ret['message'] = 'fire and smoke data same as previous data.'
+                                    else:
+                                        result = (ppera_cameras.update_one({'_id': ObjectId(id)}, {'$set': {'firesmoke_data.static_parameters': firesmoke_data}}))
+                                        if result.modified_count > 0:
+                                            ret = {'message': 'static parameters added successfully.','success': True}
+                                        else:
+                                            ret['message'] = 'static parameters not adeed.'
+                                else:
+                                    result = (ppera_cameras.update_one({'_id': ObjectId(id)}, {'$set': {'firesmoke_data.static_parameters': firesmoke_data}}))
+                                    if result.modified_count > 0:
+                                        ret = {'message': 'static parameters added successfully.','success': True}
+                                    else:
+                                        ret['message'] = 'static parameters not adeed.'                             
+                            else:
+                                ret['message'] = 'please give proper input data, try once again.'
+                        else:
+                            ret['message'] = 'please give proper fire and smoke data, it should be list type.'
+                    else:
+                        ret['message'] = 'please give proper fire and smoke data, it should not none type.'
+                else:
+                    ret['message'] = 'for this particular id, there is no such camera data exists.'
+        else:
+            ret['message'] = " ".join(["you have missed these keys ",str(missing_key), ' to enter. please enter properly.' ]) 
+    return JsonResponse(ret)
+
+
+# @camera_coin.route('/delete_fsddata', methods=['POST'])
+@csrf_exempt
+def delete_fsddata(request):
+    ret = {'success': False, 'message':'something went wrong with delete_cr_data roi api'}
+    if request.method == "POST":
+        data = json.loads(request.body)
+        try:
+            print('------------data ----------',data)
+            if data == None:
+                data = {}
+            request_key_array = ['id', 'ai_solutions','roi_id']
+            jsonobjectarray = list(set(data))
+            missing_key = set(request_key_array).difference(jsonobjectarray)
+            if not missing_key:
+                output = [k for k, v in data.items() if v == '']
+                if output:
+                    ret['message'] =" ".join(["You have missed these parameters ",str(output), ' to enter. please enter properly.' ]) 
+                else:
+                    id = data['id']
+                    ai_solutions = data['ai_solutions']
+                    roi_id = data['roi_id']
+                    finddata = ppera_cameras.find_one({'_id': ObjectId(id)})
+                    if finddata is not None:
+                        print('----------finddata----------1----',finddata)
+                        if isEmpty(ai_solutions):
+                            print('----------ai_solutions----------1----',ai_solutions)
+                            fsddata = finddata['firesmoke_data']
+                            if isEmpty(fsddata) :
+                                print()
+                                print('----------fsddata----------1----',fsddata)
+                                if 'roi_parameters' in fsddata:
+                                    update_data = []
+                                    print('----------------roi_parameters-------------1',fsddata['roi_parameters'])
+                                    if len(fsddata['roi_parameters']) != 0:
+                                        print('----------------roi_parameters-------------1.1',fsddata['roi_parameters'])
+                                        for oll,kkl in enumerate(fsddata['roi_parameters']):
+                                            print('----------------kkl-------------1',kkl)
+                                            if 'roi_id' in kkl:
+                                                if kkl['roi_id'] !=roi_id:
+                                                    update_data.append(kkl)
+                                                elif   str(kkl['roi_id']) !=str(roi_id):
+                                                    update_data.append(kkl)
+                                        print('--------------update_data--------1',update_data)   
+                                        finddata['ai_solution'].update(ai_solutions)
+                                        result = ppera_cameras.update_one( {'_id': ObjectId(id)}, {'$set': {'firesmoke_data.roi_parameters':update_data, 'ai_solution':finddata['ai_solution']}})
+                                        print('result---------1',result.modified_count)
+                                        if result.modified_count > 0:
+                                            ret = {'message':'firesmoke data delete successfully.','success': True}
+                                        else:
+                                            ret['message'] = 'firesmoke data not deleted.'
+                                    else:
+                                        ret['message']='no data found for fire and smoke'                            
+                            else:
+                                ret['message'] = 'There is no fire smoke data the camrea, please try to add.'
+                    else:
+                        ret['message'] = 'for this particular id, there is no such camera data exists.'
+            else:
+                ret['message'] = " ".join(["you have missed these keys ",str(missing_key), ' to enter. please enter properly.' ]) 
+        except Exception as error:
+            ret['message'] = " ".join(["something error occurred in delete  ",str(error), '  ----time ----   ',now_time_with_time() ])
+            ERRORLOGdata(" ".join(["\n", "[ERROR] camera_api --  1", str(error), " ----time ---- ", now_time_with_time()]))
+    return JsonResponse(ret)
+
+
+# @camera_coin.route('/edit_preset', methods=['POST'])
+@csrf_exempt
+def edit_preset(request):
+    ret = {'success': False, 'message': 'something went wrong with add roi api'}
+    if request.method == "POST":
+        data = json.loads(request.body)
+        if data == None:
+            data = {}
+        request_key_array = ['id', 'firesmoke_data','preset_key_id']
+        jsonobjectarray = list(set(data))
+        missing_key = set(request_key_array).difference(jsonobjectarray)
+        if not missing_key:
+            output = [k for k, v in data.items() if v == '']
+            if output:
+                ret['message'] = " ".join(["You have missed these parameters ",str(output), ' to enter. please enter properly.' ]) 
+            else:
+                id = data['id']
+                preset_key_id = data['preset_key_id']
+                firesmoke_data = data['firesmoke_data']
+                finddata = ppera_cameras.find_one({'_id': ObjectId(id)})
+                if finddata is not None:
+                    if type(firesmoke_data) == list:
+                        if len(firesmoke_data) != 0:
+                            fetchfiresmoke_data = finddata['firesmoke_data']
+                            if len(fetchfiresmoke_data) != 0:
+                                if len(fetchfiresmoke_data) == 1:
+                                    result = ppera_cameras.update_one( {'_id': ObjectId(id)}, {'$set': {'firesmoke_data': firesmoke_data}})
+                                    if result.modified_count > 0:
+                                        ret = {'message':'fire, smoke and dust data updated successfully.','success': True}
+                                    else:
+                                        ret['message'] = 'fire, smoke and dust not updated updated.'
+                                elif len(fetchfiresmoke_data) > 1:
+                                    update_data = []
+                                    if len(firesmoke_data) == 1:
+                                        for __, i in enumerate(fetchfiresmoke_data):
+                                            if int(i['preset_key_id']) == int(firesmoke_data[0][ 'preset_key_id']):
+                                                i['presetid'] = firesmoke_data[0][ 'presetid']
+                                                i['presetlocation'] = firesmoke_data[0][ 'presetlocation']
+                                                update_data.append(i)
+                                            else:
+                                                update_data.append(i)
+                                        result = (ppera_cameras.update_one({'_id': ObjectId(id)}, {'$set': {'firesmoke_data': update_data}}))
+                                        if result.modified_count > 0:
+                                            ret = {'message': 'fire, smoke and dust data updated successfully.','success': True}
+                                        else:
+                                            ret['message'] = 'fire, smoke and dust data not updated.'
+                                    elif len(firesmoke_data) > 1:
+                                        update_data = []
+                                        for __, i in enumerate(fetchfiresmoke_data):
+                                            for __, jjk in enumerate(firesmoke_data):
+                                                if int(i['preset_key_id']) == int(jjk['preset_key_id']):
+                                                    i['presetid'] = jjk[ 'presetid']
+                                                    i['presetlocation'] =jjk[ 'presetlocation']
+                                                    if i not in update_data:
+                                                        update_data.append(i)
+                                                else:
+                                                    if i not in update_data:
+                                                        update_data.append(i)
+                                                    if jjk not in update_data:
+                                                        update_data.append(jjk)
+                                        result = (ppera_cameras. update_one({'_id': ObjectId(id)}, {'$set': {'firesmoke_data': update_data}}))
+                                        if result.modified_count > 0:
+                                            ret = {'message': 'fire, smoke and dust data updated successfully.','success': True}
+                                        else:
+                                            ret['message'] = 'fire, smoke and dust data not updated.'
+                                    else:
+                                        ret['message'] = 'there is no data found for this camrea, please try to add.'
+                            else:
+                                ret['message'] = 'There is no camrea details exist , please try to add.'
+                        else:
+                            ret['message'] = 'fire, smoke and dust data should not be empty list.'
+                    else:
+                        ret['message'] = 'fire, smoke and dust data type should be list'
+                else:
+                    ret['message'] = 'for this particular id, there is no such camera data exists.'
+        else:
+            ret['message'] = " ".join(["you have missed these keys ",str(missing_key), ' to enter. please enter properly.' ]) 
+    return JsonResponse(ret)
+
+# @camera_coin.route('/delete_preset', methods=['POST'])
+@csrf_exempt
+def delete_preset(request):
+    ret = {'success': False, 'message':'something went wrong with delete_roi roi api'}
+    if request.method == "POST":
+        data = json.loads(request.body)
+        try:
+            if data == None:
+                data = {}
+            request_key_array = ['id', 'preset_key_id']
+            jsonobjectarray = list(set(data))
+            missing_key = set(request_key_array).difference(jsonobjectarray)
+            if not missing_key:
+                output = [k for k, v in data.items() if v == '']
+                if output:
+                    ret['message'] = " ".join(["You have missed these parameters ",str(output), ' to enter. please enter properly.' ]) 
+                else:
+                    id = data['id']
+                    presetkeyid = data['preset_key_id']
+                    finddata = ppera_cameras.find_one({'_id': ObjectId(id)})
+                    if finddata is not None:
+                        if presetkeyid is not None:
+                            firesmoke_data = finddata['firesmoke_data']
+                            if len(firesmoke_data) != 0:
+                                update_data = []
+                                if len(firesmoke_data) == 1:
+                                    print("finddata['ai_solution']",finddata['ai_solution'])
+                                    result = ppera_cameras.update_one( {'_id': ObjectId(id)}, {'$set': {'firesmoke_data.presets': [] }})
+                                    if result.modified_count > 0:
+                                        ret = {'message':'roi data delete successfully.','success': True}
+                                    else:
+                                        ret['message'] = 'roi not deleted.'
+                                elif len(firesmoke_data) > 1:
+                                    # finddata['ai_solution'].update(ai_solutions)
+                                    for __, i in enumerate(firesmoke_data):
+                                        if int(i['preset_key_id']) == int(presetkeyid):
+                                            firesmoke_data.remove(i)
+                                        else:
+                                            update_data.append(i)
+                                    result = ppera_cameras.update_one( {'_id': ObjectId(id)}, {'$set': {'firesmoke_data': update_data}})
+                                    if result.modified_count > 0:
+                                        ret = {'message': 'roi data delete successfully.','success': True}
+                                    else:
+                                        ret['message'] = 'roi not deleted.'
+                            else:
+                                ret['message'] = 'There is no roi region the camrea, please try to add.'
+                        else:
+                            ret['message'] = 'please give proper roi data, it should not none type.'
+                    else:
+                        ret['message'] = 'for this particular id, there is no such camera data exists.'
+            else:
+                ret['message'] =" ".join(["you have missed these keys ",str(missing_key), ' to enter. please enter properly.' ]) 
+        except Exception as error:
+            ret['message'] =" ".join(["something error occurred in delete roi ",str(error), '  ----time ----   ',now_time_with_time() ]) 
+            ERRORLOGdata(" ".join(["\n", "[ERROR] camera_api -- delete_roi 1", str(error), " ----time ---- ", now_time_with_time()]))
+    return JsonResponse(ret)
+
+
+
+# @camera_coin.route('/delete_firesmoke', methods=['POST'])
+@csrf_exempt
+def delete_firesmoke(request):
+    ret = {'success': False, 'message':'something went wrong with delete_cr_data roi api'}
+    if request.method == "POST":
+        data = json.loads(request.body)
+        try:
+            if data == None:
+                data = {}
+            request_key_array = ['id', 'ai_solutions']
+            jsonobjectarray = list(set(data))
+            missing_key = set(request_key_array).difference(jsonobjectarray)
+            if not missing_key:
+                output = [k for k, v in data.items() if v == '']
+                if output:
+                    ret['message'] =" ".join(["You have missed these parameters ",str(output), ' to enter. please enter properly.' ]) 
+                else:
+                    id = data['id']
+                    ai_solutions = data['ai_solutions']
+                    finddata = ppera_cameras.find_one({'_id': ObjectId(id)})
+                    if finddata is not None:
+                        if isEmpty(ai_solutions):
+                            cr_data = finddata['firesmoke_data']
+                            if len(cr_data) != 0:
+                                update_data = []
+                                if len(cr_data) == 1:
+                                    finddata['ai_solution'].update(ai_solutions)
+                                    result = ppera_cameras.update_one( {'_id': ObjectId(id)}, {'$set': {'firesmoke_data': [], 'ai_solution':finddata['ai_solution']}})
+                                    if result.modified_count > 0:
+                                        ret = {'message':'firesmoke_data data delete successfully.','success': True}
+                                    else:
+                                        ret['message'] = 'firesmoke_data not deleted.'
+                                else:
+                                    ret['message']='no data found for fire and smoke'
+                                
+                            else:
+                                ret['message'] = 'There is no cr_data region the camrea, please try to add.'
+                    else:
+                        ret['message'] = 'for this particular id, there is no such camera data exists.'
+            else:
+                ret['message'] = " ".join(["you have missed these keys ",str(missing_key), ' to enter. please enter properly.' ]) 
+        except Exception as error:
+            ret['message'] = " ".join(["something error occurred in delete roi ",str(error), '  ----time ----   ',now_time_with_time() ])
+            ERRORLOGdata(" ".join(["\n", "[ERROR] camera_api -- delete_cr_data 1", str(error), " ----time ---- ", now_time_with_time()]))
+    return JsonResponse(ret)
+
+
+
+# @camera_coin.route('/downloadSamplesheetCamerasetting', methods=['GET'])
+@csrf_exempt
+def downloadSamplesheetCamerasetting(request):
+    ret = {'success': False, 'message':'something went wrong with downloadSamplesheetCamerasetting api'}
+    if request.method == "GET":
+        try:
+            list_of_files = glob.glob(os.getcwd() + '/smaple_files/' +'/*')
+            # print('list of elements from the folder---- ',list_of_files)
+            latest_file = max(list_of_files, key=os.path.getctime)
+            path, filename = os.path.split(latest_file)
+            if filename:
+                main_path = os.path.abspath(path)
+                ret= send_from_directory(os.getcwd() + '/smaple_files/', 'CameraSettingsSamplesheet.xlsx')
+            else:
+                ret= {'success': False, 'message': 'File is not found.'}
+        except (NameError, RuntimeError, FileNotFoundError, AssertionError,
+                AttributeError, EOFError, FloatingPointError, TypeError,
+                GeneratorExit, IndexError, KeyError, KeyboardInterrupt, MemoryError,
+                NotImplementedError, OSError, OverflowError, ReferenceError,
+                StopIteration, SyntaxError, IndentationError, TabError, SystemError,
+                SystemExit, TypeError, UnboundLocalError, UnicodeError,
+                UnicodeEncodeError, UnicodeDecodeError, UnicodeTranslateError,
+                ValueError, ZeroDivisionError, ConnectionError, KeyboardInterrupt,
+                BaseException, ValueError) as e:
+            ret= {'success': False, 'message': str(e)}
+    return JsonResponse(ret)
+
+
+# @camera_coin.route('/SHUTDOWNdownloadSamplesheetCamerasetting', methods=['GET'])
+@csrf_exempt
+def SHUTDOWNdownloadSamplesheetCamerasetting(request):
+    ret = {'success': False, 'message':'something went wrong with downloadSamplesheetCamerasetting api'}
+    if request.method == "GET":
+        try:
+            list_of_files = glob.glob(os.getcwd() + '/smaple_files/' +'/*')
+            # print('list of elements from the folder---- ',list_of_files)
+            latest_file = max(list_of_files, key=os.path.getctime)
+            path, filename = os.path.split(latest_file)
+            if filename:
+                main_path = os.path.abspath(path)
+                ret= send_from_directory(os.getcwd() + '/smaple_files/', 'TSK_Shutdown_job_sample_job_sheet.xlsx')
+            else:
+                ret= {'success': False, 'message': 'File is not found.'}
+        except (NameError, RuntimeError, FileNotFoundError, AssertionError,
+                AttributeError, EOFError, FloatingPointError, TypeError,
+                GeneratorExit, IndexError, KeyError, KeyboardInterrupt, MemoryError,
+                NotImplementedError, OSError, OverflowError, ReferenceError,
+                StopIteration, SyntaxError, IndentationError, TabError, SystemError,
+                SystemExit, TypeError, UnboundLocalError, UnicodeError,
+                UnicodeEncodeError, UnicodeDecodeError, UnicodeTranslateError,
+                ValueError, ZeroDivisionError, ConnectionError, KeyboardInterrupt,
+                BaseException, ValueError) as e:
+            ret= {'success': False, 'message': str(e)}
+    return JsonResponse(ret)
