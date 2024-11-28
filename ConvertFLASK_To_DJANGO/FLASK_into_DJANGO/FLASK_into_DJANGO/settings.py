@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'camera_status_api',
     "camera_coin_api",
     'fire_smoke_config',
-    'parking_manage_data'
+    'parking_manage_data',
+    'POC',
+    'traffic_management',
 ]
 
 MIDDLEWARE = [

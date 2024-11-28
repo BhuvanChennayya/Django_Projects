@@ -46,3 +46,9 @@ voice_announcement_status=DATABASE["voice_announcement_status"]
 rtsp_flag=DATABASE["rtsp_flag"]
 VEHICLE_PARKING_MANAGEMENT_DATA=DATABASE["VEHICLE_PARKING_MANAGEMENT_DATA"]
 VPMS_DATA=DATABASE["VPMS_DATA"]
+wheelcount=DATABASE["wheelcount"]
+Wheelrotationcount=DATABASE["Wheelrotationcount"]
+wheelrotation=DATABASE["wheelrotation"]
+TRAFFICJAM_MANAGEMENT_DATA=DATABASE["TRAFFICJAM_MANAGEMENT_DATA"]
+
+

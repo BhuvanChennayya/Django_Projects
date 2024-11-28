@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse,JsonResponse,FileResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from Data_Recieving.packages import *
@@ -2412,7 +2412,15 @@ def VPMS_violation_excel_download(request):
             path, filename = os.path.split(latest_file)
             if filename:
                 main_path = os.path.abspath(path)
-                ret= send_from_directory(main_path, filename)
+                file_path = os.path.join(main_path, filename)
+    
+                if os.path.exists(file_path):
+                    # Open the file in binary mode and return it as an attachment
+                    with open(file_path, 'rb') as f:
+                        return FileResponse(f, as_attachment=True, filename=filename)
+                else:
+                        # If the file doesn't exist, return an error message
+                    return JsonResponse({'success': False, 'message': 'File not found.'},) 
             else:
                 ret= {'success': False, 'message': 'File is not found.'}
     return JsonResponse(ret)
@@ -2586,17 +2594,41 @@ def get_img_bbox(request,image_file,roiname =None):
                         else:
                             path, filename = (os.path.join(os.getcwd(), "smaple_files"),'NOT_FOUND_IMAGE.png')
                             main_path = os.path.abspath(path)
-                            ret=  send_from_directory(main_path, filename)
+                            file_path = os.path.join(main_path, filename)
+    
+                            if os.path.exists(file_path):
+                                # Open the file in binary mode and return it as an attachment
+                                with open(file_path, 'rb') as f:
+                                    return FileResponse(f, as_attachment=True, filename=filename)
+                            else:
+                                # If the file doesn't exist, return an error message
+                                return JsonResponse({'success': False, 'message': 'File not found.'})
             else:
                 # print("NOT 1111111111111 EXISTED----------------------------------------")
                 path, filename = (os.path.join(os.getcwd(), "smaple_files"),'NOT_FOUND_IMAGE.png')
                 main_path = os.path.abspath(path)
-                ret=  send_from_directory(main_path, filename)
+                file_path = os.path.join(main_path, filename)
+    
+                if os.path.exists(file_path):
+                    # Open the file in binary mode and return it as an attachment
+                    with open(file_path, 'rb') as f:
+                        return FileResponse(f, as_attachment=True, filename=filename)
+                else:
+                    # If the file doesn't exist, return an error message
+                    return JsonResponse({'success': False, 'message': 'File not found.'})
         else:
             # print("image_data not found-----2--------",image_file)
             path, filename = (os.path.join(os.getcwd(), "smaple_files"),'NOT_FOUND_IMAGE.png')
             main_path = os.path.abspath(path)
-            ret= send_from_directory(main_path, filename)
+            file_path = os.path.join(main_path, filename)
+    
+            if os.path.exists(file_path):
+                # Open the file in binary mode and return it as an attachment
+                with open(file_path, 'rb') as f:
+                    return FileResponse(f, as_attachment=True, filename=filename)
+            else:
+                # If the file doesn't exist, return an error message
+                return JsonResponse({'success': False, 'message': 'File not found.'})
         
     return JsonResponse(ret)
           
@@ -2830,7 +2862,15 @@ def NPAimage(request,image_file,roiname =None):
                         else:
                             path, filename = (os.path.join(os.getcwd(), "smaple_files"),'NOT_FOUND_IMAGE.png')
                             main_path = os.path.abspath(path)
-                            ret=  send_from_directory(main_path, filename)
+                            file_path = os.path.join(main_path, filename)
+    
+                            if os.path.exists(file_path):
+                                # Open the file in binary mode and return it as an attachment
+                                with open(file_path, 'rb') as f:
+                                    return FileResponse(f, as_attachment=True, filename=filename)
+                            else:
+                                # If the file doesn't exist, return an error message
+                                return JsonResponse({'success': False, 'message': 'File not found.'})
                 
                 # else:
 
@@ -2838,12 +2878,28 @@ def NPAimage(request,image_file,roiname =None):
                 # print("NOT 1111111111111 EXISTED----------------------------------------")
                 path, filename = (os.path.join(os.getcwd(), "smaple_files"),'NOT_FOUND_IMAGE.png')
                 main_path = os.path.abspath(path)
-                ret=  send_from_directory(main_path, filename)
+                file_path = os.path.join(main_path, filename)
+    
+                if os.path.exists(file_path):
+                    # Open the file in binary mode and return it as an attachment
+                    with open(file_path, 'rb') as f:
+                        return FileResponse(f, as_attachment=True, filename=filename)
+                else:
+                    # If the file doesn't exist, return an error message
+                    return JsonResponse({'success': False, 'message': 'File not found.'})
         else:
             # print("image_data not found-----2--------",image_file)
             path, filename = (os.path.join(os.getcwd(), "smaple_files"),'NOT_FOUND_IMAGE.png')
             main_path = os.path.abspath(path)
-            ret= send_from_directory(main_path, filename)
+            file_path = os.path.join(main_path, filename)
+    
+            if os.path.exists(file_path):
+                # Open the file in binary mode and return it as an attachment
+                with open(file_path, 'rb') as f:
+                    return FileResponse(f, as_attachment=True, filename=filename)
+            else:
+                # If the file doesn't exist, return an error message
+                return JsonResponse({'success': False, 'message': 'File not found.'})
         # else:
         #     print("image_data not found--------1-----",image_file)
         #     path, filename = (os.path.join(os.getcwd(), "smaple_files"),'NOT_FOUND_IMAGE.png')

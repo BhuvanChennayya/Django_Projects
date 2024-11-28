@@ -20,6 +20,9 @@ import camera_status_api.urls
 import camera_coin_api.urls
 import fire_smoke_config.urls
 import parking_manage_data.urls
+import POC.urls
+import traffic_management.urls
+
 
 
 urlpatterns = [
@@ -29,6 +32,7 @@ urlpatterns = [
     path('camera_coin_api/', include(camera_coin_api.urls)),
     path('fire_smoke_config/', include(fire_smoke_config.urls)),
     path('parking_manage_data/', include(parking_manage_data.urls)),
-
+    path('POC/', include(POC.urls)),
+    path('traffic_management/', include(traffic_management.urls)),
 
 ]

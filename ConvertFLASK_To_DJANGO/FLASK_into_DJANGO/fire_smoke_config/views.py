@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse,JsonResponse,FileResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from Data_Recieving.packages import *
@@ -2250,16 +2250,29 @@ def firevidoe(request,vidoename):
     if request.method == "GET":
         
         try:
-            base_path = get_current_dir_and_goto_parent_dir()+'/images/sm_rec'
+            base_path = os.path.join(get_current_dir_and_goto_parent_dir(), 'images', 'sm_rec')
             video_path = os.path.join(base_path, vidoename)
+
+            # Check if the video file exists
+            if not os.path.exists(video_path):
+                return JsonResponse({"message":"File not found.", "success":False})
 
             # Check if the request explicitly wants an mp4 file
             if request.headers.get('Accept') == 'video/mp4':
-                ret = send_file(video_path, as_attachment=True, mimetype='video/mp4')
-            
-            # Otherwise, use the default behavior
+                try:
+                    # Serve the video as an attachment with the correct MIME type
+                    response = FileResponse(open(video_path, 'rb'), content_type='video/mp4')
+                    response['Content-Disposition'] = f'attachment; filename="{vidoename}"'
+                    return response
+                except Exception as e:
+                    return JsonResponse(f"Error while processing the video: {str(e)}", status=500)
             else:
-                ret = send_from_directory(base_path, vidoename)
+                try:
+                    # Default behavior: Serve the video file
+                    response = FileResponse(open(video_path, 'rb'))
+                    return response
+                except Exception as e:
+                    return JsonResponse(f"Error while processing the video: {str(e)}", status=500)
             # return response
         except Exception as error:
             ERRORLOGdata(" ".join(["\n", "[ERROR] dashboard_apis -- get_roi_image 1", str(error), " ----time ---- ", now_time_with_time()])) 
@@ -2349,11 +2362,13 @@ def FIREANDSMOKEDUSTIMAGE(request,imagename):
                                     imgByteArr = io.BytesIO()
                                     source_img.save(imgByteArr, format='JPEG')
                                     imgByteArr.seek(0)
-                                ret= {"message":send_file(imgByteArr, mimetype='image/JPEG', as_attachment=True, download_name=imagename)}
-                                return JsonResponse(ret)
+                                response = FileResponse(imgByteArr, content_type='image/jpeg')
+                                # Set the Content-Disposition header to indicate that the file should be downloaded
+                                response['Content-Disposition'] = f'attachment; filename="{imagename}"'
+                                return (response)
                 
                 else:
-                    ret={"message":send_from_directory(base_path, imagename)}
+                    ret={"message":FileResponse(base_path, imagename)}
                     return JsonResponse(ret)
                     # return response
             ret= {"message":'given image data found.'}
@@ -2914,7 +2929,9 @@ def firesmokeviolation_excel_download(request):
             path, filename = os.path.split(latest_file)
             if filename:
                 main_path = os.path.abspath(path)
-                ret = send_from_directory(main_path, filename)
+                with open(latest_file, 'rb') as f:
+                    return FileResponse(f, as_attachment=True, filename=filename)
+            
             else:
                 ret = {'success': False, 'message': 'File is not found.'}
     else:

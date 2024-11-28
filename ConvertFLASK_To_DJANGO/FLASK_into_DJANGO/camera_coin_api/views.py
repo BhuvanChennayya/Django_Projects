@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse,JsonResponse,FileResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from Data_Recieving.packages import *
@@ -7,6 +7,130 @@ from Data_Recieving.database import *
 from Data_Recieving.final_ping import *
 
 # Create your views here.
+  
+
+def CHECKCAMERAWORKING( video_name,  ipaddress,camera_brand, camera_username,camera_password):
+    data_append = []
+    data = {}
+    if camera_username == '':
+        camera_username = 'admin'
+    if camera_password == '':
+        camera_password = 'TATA_tsk123'
+    rtsp_url = ESIBRANDCAMERASRTSP(ipaddress,camera_brand,camera_username,camera_password)#create_rtsp(ipaddress)
+    print('RTSP ------------------------------ ', rtsp_url)
+    image_data = MECHANICALRTSP( video_name, ipaddress, rtsp_url)
+    if video_name is not None and video_name !='':
+        if 'rtsp' in video_name:
+            rtsp_url = video_name
+        else:
+            rtsp_url ='file:///'+get_current_dir_and_goto_parent_dir()+ '/docketrun_eis_monitor/configs/../../test_videos/'+ video_name
+
+    print("-----file -------------------RTSP ---------------",rtsp_url)
+    print('image_data', image_data)
+    if image_data is not None:
+        data['camera_ip'] = ipaddress
+        data['camera_brand'] = camera_brand
+        data['camera_id'] = None
+        camera_name = 'docketrun'+'cp_plus'
+        if ipaddress is not None and ipaddress !='':
+            camera_name= remove_all_specail_char_with_hifhen(ipaddress)
+        data['cameraname'] =camera_name
+        data['rtsp_url'] = rtsp_url
+        panel_key_id_list = []
+        if image_data['status'] == True:
+            data['rtsp_status'] = image_data['status']
+            data['imagename'] = image_data['image_name']
+            data['image_height'] =  image_data['height']
+            data['image_width']= image_data['width']
+        return data
+    else:
+        return None
+
+
+def MECHANICALRTSP( video_name, camera_ip_address, url):
+    print("camera url getting ==",url)
+    response = True
+    if video_name is not None and video_name !='':
+        if 'rtsp' in video_name :
+            url = video_name
+        else:
+            url =  os.path.join(get_current_dir_and_goto_parent_dir() , 'test_videos',video_name)
+    NOTWORKINGSTATUS = None
+    if response:
+        directory_path =  os.path.join(os.getcwd() , 'rtsp_roi_image')
+        if not os.path.exists(directory_path):
+            handle_uploaded_file(directory_path)
+        present_time = replace_spl_char(str(datetime.now()))
+        print('verify___rtsp====',url)
+        cam = cv2.VideoCapture(url)
+        full_path = None
+        count=0
+        newpanelpoints = []
+        if cam.isOpened() == True:
+            name = 'docketrun' + '_' + present_time + '.jpg'
+            name1 = 'docketrun' + '_' + present_time + '1' + '.jpg'
+            while cam.isOpened():
+                ret, frame = cam.read()
+                if ret:
+                    if count == 10:
+                        if frame.shape[-1] == 3:
+                            if frame.shape[0] > 10 and frame.shape[1] > 10:
+                                if frame.dtype == 'uint8':
+                                    full_path = directory_path + '/' + name
+                                    full_path1 = directory_path + '/' + name1
+                                    cv2.imwrite(full_path, frame)
+                                    cv2.imwrite(full_path1, frame)
+                                    image_resizing(full_path)
+                                    # NOTWORKINGSTATUS= {'image_name': name, 'height': '544', 'width': '960'}
+                                    NOTWORKINGSTATUS = {'status': True, 'height': 544,'width': 960, 'image_name': name, }
+                                    break
+                    elif count == 30:
+                        if frame.shape[-1] == 3:
+                            if frame.shape[0] > 10 and frame.shape[1] > 10:
+                                if frame.dtype == 'uint8':
+                                    full_path = directory_path + '/' + name
+                                    full_path1 = directory_path + '/' + name1
+                                    cv2.imwrite(full_path, frame)
+                                    cv2.imwrite(full_path1, frame)
+                                    image_resizing(full_path)
+                                    # NOTWORKINGSTATUS= {'image_name': name, 'height': '544', 'width': '960'}
+                                    NOTWORKINGSTATUS = {'status': True, 'height': 544,'width': 960, 'image_name': name, }
+                                    break
+                    count += 1
+                else:
+                    break
+            cam.release()
+            #cv2.destroyAllWindows()
+    return NOTWORKINGSTATUS
+
+  
+
+def CHECKCAMERADATA(row):
+    if row is not None:
+        if row['ip_address'] is not None:
+            return_data = CHECKCAMERAWORKING( row[ 'video_names'], row['ip_address'],row['camera_brand'],row['camera_username'],row['camera_password'])
+            if return_data is not None:
+                if isEmpty(return_data):
+                    row['data'] =return_data
+                else:
+                    row['data'] ={}   
+            else  :
+                row['data'] =None 
+    return row
+
+def CHECKCAMERADATA(row):
+    if row is not None:
+        if row['ip_address'] is not None:
+            return_data = CHECKCAMERAWORKING( row[ 'video_names'], row['ip_address'],row['camera_brand'],row['camera_username'],row['camera_password'])
+            if return_data is not None:
+                if isEmpty(return_data):
+                    row['data'] =return_data
+                else:
+                    row['data'] ={}   
+            else  :
+                row['data'] =None 
+    return row
+
 
 def NEWCAPTURPANELIMAGE(url):
     print("camera url getting ==",url)
@@ -685,6 +809,19 @@ def remove_relayhooterDetailsinROi(inputdata, fetecheddata):
     # print("------------Fetcheddata-----------",fetecheddata['roi_data'])
     # print("-------------------===Campare list status===================",compare_lists(fetecheddata['roi_data'], Newdataforupdate))   
     return Newdataforupdate  
+
+
+def compare_dicts(dict1, dict2):
+    differences = []
+    keys1 = set(dict1.keys())
+    keys2 = set(dict2.keys())
+    all_keys = keys1.union(keys2)
+
+    for key in all_keys:
+        if dict1.get(key) != dict2.get(key):
+            differences.append((key, dict1.get(key), dict2.get(key)))
+
+    return differences
 
 def compare_lists(list1, list2):
     if len(list1) != len(list2):
@@ -4150,9 +4287,13 @@ def CoinviolationVideo(request,video_name = None):
                 try:
                     #base_path = os.path.join(get_current_dir_and_goto_parent_dir(),'images', 'RIRO_merged_imgs')
                 # return send_from_directory(base_path, image_file)
-                    base_path = os.path.join(get_current_dir_and_goto_parent_dir(),'images', 'sm_rec')#os.path.join(os.getcwd(), 'smaple_files')#os.path.basename('add_camera_sample.xlsx')#
-                    file_path = os.path.basename(video_name)
-                    response = send_from_directory(base_path, file_path, as_attachment=True)
+                    # base_path = os.path.join(get_current_dir_and_goto_parent_dir(),'images', 'sm_rec')#os.path.join(os.getcwd(), 'smaple_files')#os.path.basename('add_camera_sample.xlsx')#
+                    # file_path = os.path.basename(video_name)
+                    # response = send_from_directory(base_path, file_path, as_attachment=True)
+                    # return response
+                    base_path = os.path.join(get_current_dir_and_goto_parent_dir(), 'images', 'sm_rec')
+                    file_path = os.path.join(base_path, video_name)
+                    response = FileResponse(open(file_path, 'rb'), as_attachment=True, filename=video_name)
                     return response
                 except Exception as  error:
                     ERRORLOGdata(" ".join(["\n", "[ERROR] camera_coin_apis -- GETCOINVIOLATIONVIDEO 1", str(error), " ----time ---- ", now_time_with_time()]))
@@ -4221,7 +4362,7 @@ def get_obj_img(request):
         try:
             base_path = os.path.join(os.getcwd(), 'smaple_files')
             file_path = os.path.basename('add_camera_sample.xlsx')
-            ret = send_from_directory(base_path, file_path, as_attachment=True)
+            ret = FileResponse(open(file_path, 'rb'), as_attachment=True, filename='add_camera_sample.xlsx')
             # return response
         except Exception as  error:
             ERRORLOGdata(" ".join(["\n", "[ERROR] camera_coin_apis -- get_samplefileFORCHECKCAMERA 1", str(error), " ----time ---- ", now_time_with_time()]))      
@@ -4738,15 +4879,25 @@ def downloadSamplesheetCamerasetting(request):
     ret = {'success': False, 'message':'something went wrong with downloadSamplesheetCamerasetting api'}
     if request.method == "GET":
         try:
-            list_of_files = glob.glob(os.getcwd() + '/smaple_files/' +'/*')
-            # print('list of elements from the folder---- ',list_of_files)
+              # Get the list of all files in the directory
+            folder_path = os.path.join(os.getcwd(), 'smaple_files')
+            list_of_files = glob.glob(folder_path + '/*')
+
+            if not list_of_files:
+                ret= {'success': False, 'message': 'File is not found.'}
+
+            # Find the latest file
             latest_file = max(list_of_files, key=os.path.getctime)
             path, filename = os.path.split(latest_file)
-            if filename:
-                main_path = os.path.abspath(path)
-                ret= send_from_directory(os.getcwd() + '/smaple_files/', 'CameraSettingsSamplesheet.xlsx')
-            else:
+
+            # Serve the latest file as a downloadable attachment
+            try:
+                response = FileResponse(open(latest_file, 'rb'), as_attachment=True, filename=filename)
+                return response
+            except :
                 ret= {'success': False, 'message': 'File is not found.'}
+            
+                
         except (NameError, RuntimeError, FileNotFoundError, AssertionError,
                 AttributeError, EOFError, FloatingPointError, TypeError,
                 GeneratorExit, IndexError, KeyError, KeyboardInterrupt, MemoryError,
@@ -4766,15 +4917,28 @@ def SHUTDOWNdownloadSamplesheetCamerasetting(request):
     ret = {'success': False, 'message':'something went wrong with downloadSamplesheetCamerasetting api'}
     if request.method == "GET":
         try:
-            list_of_files = glob.glob(os.getcwd() + '/smaple_files/' +'/*')
-            # print('list of elements from the folder---- ',list_of_files)
+           # Get the list of all files in the directory
+            folder_path = os.path.join(os.getcwd(), 'smaple_files')
+            list_of_files = glob.glob(folder_path + '/*')
+
+            # If no files are found, return a failure response
+            if not list_of_files:
+                return JsonResponse({'success': False, 'message': 'No files found in the directory'})
+
+            # Find the latest file based on creation time
             latest_file = max(list_of_files, key=os.path.getctime)
             path, filename = os.path.split(latest_file)
+
+            # Check if the file exists and return it
             if filename:
-                main_path = os.path.abspath(path)
-                ret= send_from_directory(os.getcwd() + '/smaple_files/', 'TSK_Shutdown_job_sample_job_sheet.xlsx')
+                try:
+                    # Serve the file as an attachment
+                    return FileResponse(open(latest_file, 'rb'), as_attachment=True, filename=filename)
+                except FileNotFoundError:
+                    return JsonResponse({'success': False, 'message': 'File not found.'})
             else:
-                ret= {'success': False, 'message': 'File is not found.'}
+                # If no filename is found, return an error message
+                return JsonResponse({'success': False, 'message': 'File is not found.'})
         except (NameError, RuntimeError, FileNotFoundError, AssertionError,
                 AttributeError, EOFError, FloatingPointError, TypeError,
                 GeneratorExit, IndexError, KeyError, KeyboardInterrupt, MemoryError,
