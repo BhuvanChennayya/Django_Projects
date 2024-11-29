@@ -20,8 +20,8 @@ import camera_status_api.urls
 import camera_coin_api.urls
 import fire_smoke_config.urls
 import parking_manage_data.urls
-import POC.urls
-import traffic_management.urls
+import POC.urls , traffic_management.urls
+import users.urls , varify_excel_data_api.urls,  voice_annoucement.urls
 
 
 
@@ -34,5 +34,8 @@ urlpatterns = [
     path('parking_manage_data/', include(parking_manage_data.urls)),
     path('POC/', include(POC.urls)),
     path('traffic_management/', include(traffic_management.urls)),
+    path('users/', include(users.urls)),
+    path('varify_excel_data_api/', include(varify_excel_data_api.urls)),
+    path('voice_annoucement/', include(voice_annoucement.urls)),
 
 ]

@@ -78,6 +78,9 @@ from PIL import Image
 from collections import defaultdict, OrderedDict
 
 
+import unicodedata
+
+
 email_regex = re.compile(r"[^@]+@[^@]+\.[^@]+")
 username_regex = re.compile(r"^[a-zA-Z0-9_]{3,10}$")
 firstname_regex = re.compile(r"^[a-zA-Z]{3,10}$")           # first name and last name
@@ -3806,3 +3809,44 @@ def delete_hooter_data(find_data):
         print(error)
 
 
+
+
+
+
+def secure_filename(filename):
+    _filename_strip_re = re.compile(r"[^A-Za-z0-9_.-]")
+    _windows_device_files = {"CON", "PRN", "AUX", "NUL",
+                             "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+                             "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"}
+    
+    if isinstance(filename, str):
+        filename = unicodedata.normalize("NFKD", filename)
+        filename = filename.encode("utf-8", "ignore").decode("utf-8")
+    # Remove any non-ASCII and non-safe characters
+    filename = str(_filename_strip_re.sub("", "_".join(filename.split()))).strip("._")
+    # # Prevent reserved filenames on Windows
+    if os.name == "nt" and filename.split(".")[0].upper() in _windows_device_files:
+        filename = f"_{filename}"
+    return filename
+
+
+# def secure_filename(filename):
+#     _filename_strip_re = re.compile(r"[^A-Za-z0-9_.-]")
+#     _windows_device_files = {"CON", "PRN", "AUX", "NUL",
+#                              "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+#                              "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"}
+    
+#     # Check if filename is valid
+#     if not isinstance(filename, str) or not filename.strip():
+#         raise ValueError("Invalid filename: must be a non-empty string")
+    
+#     # Normalize and sanitize
+#     filename = unicodedata.normalize("NFKD", filename)
+#     filename = filename.encode("utf-8", "ignore").decode("utf-8")
+#     filename = str(_filename_strip_re.sub("", "_".join(filename.split()))).strip("._")
+    
+#     # Handle Windows reserved filenames
+#     if os.name == "nt" and filename.split(".")[0].upper() in _windows_device_files:
+#         filename = f"_{filename}"
+    
+#     return filename

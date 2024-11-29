@@ -1,6 +1,6 @@
 
 
-from Data_recieving_and_Dashboard.packages import *
+from Data_recieving_and_Dashboardpackages import *
 camera_status = Blueprint('camera_status', __name__)
 
 

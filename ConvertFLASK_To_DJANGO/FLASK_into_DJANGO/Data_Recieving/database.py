@@ -50,5 +50,6 @@ wheelcount=DATABASE["wheelcount"]
 Wheelrotationcount=DATABASE["Wheelrotationcount"]
 wheelrotation=DATABASE["wheelrotation"]
 TRAFFICJAM_MANAGEMENT_DATA=DATABASE["TRAFFICJAM_MANAGEMENT_DATA"]
-
-
+camera_excel_details=DATABASE["camera_excel_details"]
+excel_cameras=DATABASE["excel_cameras"]
+voiceannoucement_configurations=DATABASE["voiceannoucement_configurations"]

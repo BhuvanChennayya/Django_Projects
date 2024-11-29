@@ -1267,8 +1267,9 @@ def wheelroationimage(request,imagename):
     if request.method =="GET":
         if 1:
         # try:
-            base_path = get_current_dir_and_goto_parent_dir()+'/images/frame'
+            base_path = get_current_dir_and_goto_parent_dir()+'/FLASK_into_DJANGO/images/frame'
             file_path = os.path.join(base_path, imagename)
+            print("file path----------------",file_path)
             image_data = wheelrotation.find_one({'object_details.details.image_name':imagename})#({'video_file_name': imagename})
             if image_data is not None:
                 if isEmpty(image_data['object_details']) :
@@ -1323,7 +1324,14 @@ def wheelroationimage(request,imagename):
                     else:
                         # If the file doesn't exist, return an error message
                         return JsonResponse({'success': False, 'message': 'File not found.'})
-            return JsonResponse({'success': False, 'message': 'given image data not found.'})                       
+            # return JsonResponse({'success': False, 'message': 'given image data not found.'}) 
+            if os.path.exists(file_path):
+                        # Open the file in binary mode and return it as an attachment
+                f=open(file_path, 'rb') 
+                return FileResponse(f, as_attachment=True, filename=imagename)
+            else:
+                        # If the file doesn't exist, return an error message
+                return JsonResponse({'success': False, 'message': 'File not found.'})                      
         # except Exception as error:
         #     ERRORLOGdata(" ".join(["\n", "[ERROR] dashboard_apis -- get_roi_image 1", str(error), " ----time ---- ", now_time_with_time()])) 
         #     return str(error)
